@@ -1,4 +1,4 @@
-"""Provides unit testing of the DirectedGraph class in the main graphlib module."""
+"""Provides unit testing of the UndirectedGraph class in the main graphlib module."""
 
 import unittest
 

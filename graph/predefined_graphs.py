@@ -1,3 +1,5 @@
+"""Provides factory methods for building well-known, predefined graphs."""
+
 from .classes import UndirectedGraph
 
 def build_triangle_graph():

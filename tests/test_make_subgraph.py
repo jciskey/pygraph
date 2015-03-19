@@ -1,4 +1,4 @@
-"""Provides unit tests to verify that the biconnected components algorithms are functioning correctly."""
+"""Provides unit tests to verify that the make subgraph algorithm is functioning correctly."""
 
 import unittest
 
