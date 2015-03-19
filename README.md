@@ -10,12 +10,13 @@ Common algorithms supported will include:
 * BFS
 * Connected Components (**Implemented**)
 * Biconnected Components (**Implemented**)
-* Articulation Vertices
+* Articulation Vertices (**Implemented**)
 * Minimum Spanning Tree
 
 Advanced algorithms supported will include:
 * Triconnected Components
 * Separation Pairs
+* Lipton-Tarjan Separator Theorem
 * Planarity Testing
 * Fully Dynamic Planarity Testing
 * Planar Embedding
