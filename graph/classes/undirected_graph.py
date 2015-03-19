@@ -4,8 +4,8 @@ import copy
 
 from .directed_graph import DirectedGraph
 
-class UndirectedGraph(DirectedGraph):
 
+class UndirectedGraph(DirectedGraph):
     def __deepcopy__(self, memo=None):
         graph = UndirectedGraph()
         graph.nodes = copy.deepcopy(self.nodes)
@@ -38,38 +38,38 @@ class UndirectedGraph(DirectedGraph):
         """Removes the edge identified by "edge_id" from the graph."""
         edge = self.edges[edge_id]
 
-        #Remove the edge from the "from node"
-        #--Determine the from node
+        # Remove the edge from the "from node"
+        # --Determine the from node
         from_node_id = edge['vertices'][0]
         from_node = self.get_node(from_node_id)
 
-        #--Remove the edge from it
+        # --Remove the edge from it
         from_node['edges'].remove(edge_id)
 
-        #Remove the edge from the "to node"
+        # Remove the edge from the "to node"
         to_node_id = edge['vertices'][1]
         to_node = self.get_node(to_node_id)
 
-        #--Remove the edge from it
+        # --Remove the edge from it
         to_node['edges'].remove(edge_id)
 
-        #Remove the edge from the edge list
+        # Remove the edge from the edge list
         del self.edges[edge_id]
 
     def move_edge_target(self, edge_id, node_a):
         """Moves an edge so that it targets node_a."""
-        #Grab the edge
+        # Grab the edge
         edge = self.get_edge(edge_id)
 
-        #Remove the edge from the original "target node"
+        # Remove the edge from the original "target node"
         original_target_node_id = edge['vertices'][1]
         original_target_node = self.get_node(original_target_node_id)
         original_target_node['edges'].remove(edge_id)
 
-        #Add the edge to the new target node
+        # Add the edge to the new target node
         new_target_node_id = node_a
         new_target_node = self.get_node(new_target_node_id)
         new_target_node['edges'].append(edge_id)
 
-        #Alter the vertices on the edge
+        # Alter the vertices on the edge
         edge['vertices'] = (edge['vertices'][0], node_a)

@@ -1,43 +1,45 @@
-"""Gathers together a collection of helper functions and classes that the library needs, but end users won't care about."""
+"""Gathers together a collection of helper functions and classes that the library needs,
+but end users won't care about."""
 
 import copy
 
 from ..classes import UndirectedGraph
 
 
-#Graph Conversions
+# Graph Conversions
 
 def make_subgraph(graph, vertices, edges):
     """Converts a subgraph given by a list of vertices and edges into a graph object."""
-    #Copy the entire graph
+    # Copy the entire graph
     local_graph = copy.deepcopy(graph)
 
-    #Remove all the edges that aren't in the list
+    # Remove all the edges that aren't in the list
     edges_to_delete = filter(lambda x: x not in edges, local_graph.get_all_edge_ids())
     for e in edges_to_delete:
         local_graph.delete_edge_by_id(e)
 
-    #Remove all the vertices that aren't in the list
+    # Remove all the vertices that aren't in the list
     nodes_to_delete = filter(lambda x: x not in vertices, local_graph.get_all_node_ids())
     for n in nodes_to_delete:
         local_graph.delete_node(n)
 
     return local_graph
 
+
 def convert_graph_directed_to_undirected(dg):
     """Converts a directed graph into an undirected graph. Directed edges are made undirected."""
 
     udg = UndirectedGraph()
 
-    #Copy the graph
-    #--Copy nodes
-    #--Copy edges
+    # Copy the graph
+    # --Copy nodes
+    # --Copy edges
     udg.nodes = copy.deepcopy(dg.nodes)
     udg.edges = copy.deepcopy(dg.edges)
     udg.next_node_id = dg.next_node_id
     udg.next_edge_id = dg.next_edge_id
 
-    #Convert the directed edges into undirected edges
+    # Convert the directed edges into undirected edges
     for edge_id in udg.get_all_edge_ids():
         edge = udg.get_edge(edge_id)
         target_node_id = edge['vertices'][1]
@@ -46,10 +48,13 @@ def convert_graph_directed_to_undirected(dg):
 
     return udg
 
+
 def remove_duplicate_edges_directed(dg):
     """Removes duplicate edges from a directed graph."""
-    #With directed edges, we can just hash the to and from node id tuples and if a node happens to conflict with one that already exists, we delete it
-    #--For aesthetic, we sort the edge ids so that lower edge ids are kept
+    # With directed edges, we can just hash the to and from node id tuples and if
+    # a node happens to conflict with one that already exists, we delete it
+
+    # --For aesthetic, we sort the edge ids so that lower edge ids are kept
     lookup = {}
     edges = sorted(dg.get_all_edge_ids())
     for edge_id in edges:
@@ -60,10 +65,11 @@ def remove_duplicate_edges_directed(dg):
         else:
             lookup[tpl] = edge_id
 
+
 def remove_duplicate_edges_undirected(udg):
     """Removes duplicate edges from an undirected graph."""
-    #With undirected edges, we need to hash both combinations of the to-from node ids, since a-b and b-a are equivalent
-    #--For aesthetic, we sort the edge ids so that lower edges ids are kept
+    # With undirected edges, we need to hash both combinations of the to-from node ids, since a-b and b-a are equivalent
+    # --For aesthetic, we sort the edge ids so that lower edges ids are kept
     lookup = {}
     edges = sorted(udg.get_all_edge_ids())
     for edge_id in edges:
@@ -75,6 +81,7 @@ def remove_duplicate_edges_undirected(udg):
         else:
             lookup[tpl_a] = edge_id
             lookup[tpl_b] = edge_id
+
 
 def get_vertices_from_edge_list(graph, edge_list):
     """Transforms a list of edges into a list of the nodes those edges connect.
@@ -88,6 +95,7 @@ def get_vertices_from_edge_list(graph, edge_list):
         node_set.add(b)
 
     return list(node_set)
+
 
 def merge_graphs(main_graph, addition_graph):
     """Merges an ''addition_graph'' into the ''main_graph''.

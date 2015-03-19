@@ -2,6 +2,7 @@
 
 import copy
 
+
 class DirectedGraph(object):
     nodes = None
     edges = None
@@ -36,8 +37,8 @@ class DirectedGraph(object):
         node_id = self.generate_node_id()
 
         node = {'id': node_id,
-            'edges': [],
-            'data': {}
+                'edges': [],
+                'data': {}
         }
 
         self.nodes[node_id] = node
@@ -50,8 +51,8 @@ class DirectedGraph(object):
         edge_id = self.generate_edge_id()
 
         edge = {'id': edge_id,
-            'vertices': (node_a, node_b),
-            'data': {}
+                'vertices': (node_a, node_b),
+                'data': {}
         }
 
         self.edges[edge_id] = edge
@@ -108,29 +109,29 @@ class DirectedGraph(object):
         """Removes the edge identified by "edge_id" from the graph."""
         edge = self.edges[edge_id]
 
-        #Remove the edge from the "from node"
-        #--Determine the from node
+        # Remove the edge from the "from node"
+        # --Determine the from node
         from_node_id = edge['vertices'][0]
         from_node = self.get_node(from_node_id)
 
-        #--Remove the edge from it
+        # --Remove the edge from it
         from_node['edges'].remove(edge_id)
 
-        #Remove the edge from the edge list
+        # Remove the edge from the edge list
         del self.edges[edge_id]
 
     def delete_edge_by_nodes(self, node_a, node_b):
         """Removes all the edges from node_a to node_b from the graph."""
         node = self.get_node(node_a)
 
-        #Determine the edge ids
+        # Determine the edge ids
         edge_ids = []
         for e_id in node['edges']:
             edge = self.get_edge(e_id)
             if edge['vertices'][1] == node_b:
                 edge_ids.append(e_id)
 
-        #Delete the edges
+        # Delete the edges
         for e in edge_ids:
             self.delete_edge_by_id(e)
 
@@ -138,38 +139,38 @@ class DirectedGraph(object):
         """Removes the node identified by node_id from the graph."""
         node = self.get_node(node_id)
 
-        #Remove all edges from the node
+        # Remove all edges from the node
         for e in node['edges']:
             self.delete_edge_by_id(e)
 
-        #Remove all edges to the node
+        # Remove all edges to the node
         edges = [edge_id for edge_id, edge in self.edges.items() if edge['vertices'][1] == node_id]
         for e in edges:
             self.delete_edge_by_id(e)
 
-        #Remove the node from the node list
+        # Remove the node from the node list
         del self.nodes[node_id]
 
     def move_edge_source(self, edge_id, node_a, node_b):
         """Moves an edge originating from node_a so that it originates from node_b."""
-        #Grab the edge
+        # Grab the edge
         edge = self.get_edge(edge_id)
 
-        #Alter the vertices
+        # Alter the vertices
         edge['vertices'] = (node_b, edge['vertices'][1])
 
-        #Remove the edge from node_a
+        # Remove the edge from node_a
         node = self.get_node(node_a)
         node['edges'].remove(edge_id)
 
-        #Add the edge to node_b
+        # Add the edge to node_b
         node = self.get_node(node_b)
         node['edges'].append(edge_id)
 
     def move_edge_target(self, edge_id, node_a):
         """Moves an edge so that it targets node_a."""
-        #Grab the edge
+        # Grab the edge
         edge = self.get_edge(edge_id)
 
-        #Alter the vertices
+        # Alter the vertices
         edge['vertices'] = (edge['vertices'][0], node_a)

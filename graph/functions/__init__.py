@@ -4,5 +4,5 @@ from .biconnected_components import find_biconnected_components, find_articulati
 from .planarity import is_planar
 
 from .helpers import (make_subgraph, merge_graphs, convert_graph_directed_to_undirected,
-                     remove_duplicate_edges_directed, remove_duplicate_edges_undirected,
-                     get_vertices_from_edge_list)
+                      remove_duplicate_edges_directed, remove_duplicate_edges_undirected,
+                      get_vertices_from_edge_list)

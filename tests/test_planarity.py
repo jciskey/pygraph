@@ -5,8 +5,8 @@ import unittest
 from ..graph import is_planar
 from . import utility_functions
 
-class IsPlanarTest(unittest.TestCase):
 
+class IsPlanarTest(unittest.TestCase):
     def test_planar_graph(self):
         """Does the ''is_planar'' function correctly classify the simple test graph as planar?"""
         self.fail('Not implemented')

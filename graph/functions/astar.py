@@ -2,6 +2,7 @@
 
 import heapq
 
+
 def a_star_search(graph, start, goal):
     """Runs an A* search on the specified graph to find a path from the ''start'' node to the ''goal'' node.
     Returns a list of nodes specifying a minimal path between the two nodes.
@@ -16,7 +17,7 @@ def a_star_search(graph, start, goal):
         return []
 
 
-#A* Search Helpers
+# A* Search Helpers
 class PriorityQueue:
     def __init__(self):
         self.elements = []
@@ -30,8 +31,10 @@ class PriorityQueue:
     def get(self):
         return heapq.heappop(self.elements)[1]
 
+
 def heuristic(a, b):
     return 1
+
 
 def _a_star_search_internal(graph, start, goal):
     """Performs an A* search, returning information about whether the goal node was reached
@@ -59,6 +62,7 @@ def _a_star_search_internal(graph, start, goal):
                 came_from[next_node] = current
 
     return came_from, cost_so_far, goal_reached
+
 
 def reconstruct_path(came_from, start, goal):
     current = goal
