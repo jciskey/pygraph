@@ -12,3 +12,6 @@ from .predefined_graphs import (build_triangle_graph, build_square_graph, build_
 
 # Rendering functions
 from .render import graph_to_dot
+
+# Exceptions
+from .exceptions import PygraphError, NonexistentNodeError, NonexistentEdgeError

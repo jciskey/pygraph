@@ -3,6 +3,7 @@
 import copy
 
 from .directed_graph import DirectedGraph
+from ..exceptions import NonexistentNodeError, NonexistentEdgeError
 
 
 class UndirectedGraph(DirectedGraph):
@@ -36,7 +37,7 @@ class UndirectedGraph(DirectedGraph):
 
     def delete_edge_by_id(self, edge_id):
         """Removes the edge identified by "edge_id" from the graph."""
-        edge = self.edges[edge_id]
+        edge = self.get_edge(edge_id)
 
         # Remove the edge from the "from node"
         # --Determine the from node

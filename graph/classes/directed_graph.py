@@ -2,6 +2,7 @@
 
 import copy
 
+from ..exceptions import NonexistentNodeError, NonexistentEdgeError
 
 class DirectedGraph(object):
     nodes = None
@@ -48,6 +49,18 @@ class DirectedGraph(object):
     def new_edge(self, node_a, node_b):
         """Adds a new edge from node_a to node_b.
         Returns the edge id of the new edge."""
+
+        # Verify that both nodes exist in the graph
+        try:
+            self.nodes[node_a]
+        except KeyError:
+            raise NonexistentNodeError(node_a)
+        try:
+            self.nodes[node_b]
+        except KeyError:
+            raise NonexistentNodeError(node_b)
+
+        # Create the new edge
         edge_id = self.generate_edge_id()
 
         edge = {'id': edge_id,
@@ -83,7 +96,11 @@ class DirectedGraph(object):
 
     def get_node(self, node_id):
         """Returns the node object identified by "node_id"."""
-        return self.nodes[node_id]
+        try:
+            node_object = self.nodes[node_id]
+        except KeyError:
+            raise NonexistentNodeError(node_id)
+        return node_object
 
     def get_all_node_ids(self):
         """Returns a list of all the node ids in the graph."""
@@ -95,7 +112,11 @@ class DirectedGraph(object):
 
     def get_edge(self, edge_id):
         """Returns the edge object identified by "edge_id"."""
-        return self.edges[edge_id]
+        try:
+            edge_object = self.edges[edge_id]
+        except KeyError:
+            raise NonexistentEdgeError(edge_id)
+        return edge_object
 
     def get_all_edge_ids(self):
         """Returns a list of all the edge ids in the graph"""
@@ -107,7 +128,7 @@ class DirectedGraph(object):
 
     def delete_edge_by_id(self, edge_id):
         """Removes the edge identified by "edge_id" from the graph."""
-        edge = self.edges[edge_id]
+        edge = self.get_edge(edge_id)
 
         # Remove the edge from the "from node"
         # --Determine the from node

@@ -2,21 +2,104 @@
 
 import unittest
 
-from ..graph import UndirectedGraph
+from ..graph import UndirectedGraph, NonexistentNodeError, NonexistentEdgeError
 from . import utility_functions
 
 
 class UDGTest(unittest.TestCase):
+    def test_new_edge_with_bad_node_raises_error(self):
+        """Does the ''new_edge'' method raise an error with invalid node ids?"""
+        graph = UndirectedGraph()
+
+        node_a = 1
+        node_b = 2
+
+        # Test both nonexistent
+        try:
+            graph.new_edge(node_a, node_b)
+        except NonexistentNodeError:
+            pass
+        else:
+            self.fail('New edge accepts invalid node ids "{}", "{}"'.format(node_a, node_b))
+
+        # Test node_b nonexistent
+        node_a = graph.new_node()
+        try:
+            graph.new_edge(node_a, node_b)
+        except NonexistentNodeError:
+            pass
+        else:
+            self.fail('New edge accepts an invalid node id "{}"'.format(node_b))
+
+        # Test node_a nonexistent
+        node_b = graph.new_node()
+        graph.delete_node(node_a)
+        try:
+            graph.new_edge(node_a, node_b)
+        except NonexistentNodeError:
+            pass
+        else:
+            self.fail('New edge accepts an invalid node id "{}"'.format(node_a))
+
+        # Test both nodes existant
+        node_a = graph.new_node()
+        try:
+            graph.new_edge(node_a, node_b)
+        except NonexistentNodeError:
+            self.fail('New edge throws error when given existing nodes')
+        else:
+            pass
+
+
     def test_new_edge_return_value(self):
         """Does the ''new_edge'' method return an edge id?"""
         graph = UndirectedGraph()
 
-        graph.new_node()
-        graph.new_node()
+        node_a = graph.new_node()
+        node_b = graph.new_node()
 
-        edge_id = graph.new_edge(1, 2)
+        edge_id = graph.new_edge(node_a, node_b)
 
         self.assertIsNotNone(edge_id)
+
+    def test_delete_edge_with_bad_edge_raises_error(self):
+        """Does the ''delete_edge_by_id'' method raise an error when given an invalid edge id?"""
+        graph = UndirectedGraph()
+
+        edge_id = 1
+
+        try:
+            graph.delete_edge_by_id(edge_id)
+        except NonexistentEdgeError:
+            pass
+        else:
+            self.fail('Delete edge accepts an invalid edge id "{}"'.format(edge_id))
+
+    def test_get_node_with_bad_node_raises_error(self):
+        """Does the ''get_node'' method raise an error when given an invalid node id?"""
+        graph = UndirectedGraph()
+
+        node_id = 1
+
+        try:
+            graph.get_node(node_id)
+        except NonexistentNodeError:
+            pass
+        else:
+            self.fail('Get node accepts an invalid node id "{}"'.format(node_id))
+
+    def test_get_edge_with_bad_edge_raises_error(self):
+        """Does the ''get_edge'' method raise an error when given an invalid edge id?"""
+        graph = UndirectedGraph()
+
+        edge_id = 1
+
+        try:
+            graph.get_edge(edge_id)
+        except NonexistentEdgeError:
+            pass
+        else:
+            self.fail('Get edge accepts an invalid edge id "{}"'.format(edge_id))
 
     def test_correct_neighbors(self):
         """Does the ''neighbors'' method produce the proper list of neighbor nodes in an undirected graph?"""
