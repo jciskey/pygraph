@@ -174,17 +174,66 @@ class BiconnectedComponentsTest(unittest.TestCase):
         # Verify that there are the expected number of components
         self.assertEqual(4, len(calculated_components))
 
+
+class ArticulationVerticesTest(unittest.TestCase):
     def test_articulation_vertices_empty_graph(self):
         """Does the ''find_articulation_vertices'' function return an empty list when run on an empty graph?"""
-        self.fail('Not implemented')
+        graph = UndirectedGraph()
+
+        expected = []
+        calculated = find_articulation_vertices(graph)
+
+        self.assertEqual(expected, calculated)
 
     def test_articulation_vertices_fully_biconnected_graph(self):
         """Does the ''find_articulation_vertices'' function return an empty list
         when run on a fully biconnected graph?"""
-        self.fail('Not implemented')
+        graph = utility_functions.build_fully_biconnected_test_graph()
+
+        expected = []
+        calculated = find_articulation_vertices(graph)
+
+        self.assertEqual(expected, calculated)
+
+    def test_articulation_vertices_single_cut_vertex(self):
+        """Does the ''find_articulation_vertices'' function return a single
+        articulation vertex for a graph with a single cut vertex?"""
+        graph = utility_functions.build_3_node_line_graph()
+
+        expected = [2]
+        calculated = find_articulation_vertices(graph)
+
+        self.assertEqual(expected, calculated)
+
+    def test_articulation_vertices_single_cut_vertex_is_root(self):
+        """Does the ''find_articulation_vertices'' function return a single
+        articulation vertex for a graph where the root node is the single cut vertex?"""
+        graph = utility_functions.build_3_node_line_root_articulation_graph()
+
+        expected = [1]
+        calculated = find_articulation_vertices(graph)
+
+        self.assertEqual(expected, calculated)
+
+    def test_articulation_vertices_dual_cut_vertices(self):
+        """Does the ''find_articulation_vertices'' function return a pair of
+        articulation vertices for a graph where there are two?"""
+        graph = utility_functions.build_simple_test_graph()
+
+        expected = [1, 2]
+        calculated = find_articulation_vertices(graph)
+        calculated.sort()
+
+        self.assertEqual(expected, calculated)
 
     def test_articulation_vertices_biconnected_graph(self):
         """Does the ''find_articulation_vertices'' function return the correct list
         of articulation vertices for a graph with multiple biconnected components?"""
-        self.fail('Not implemented')
+        graph = utility_functions.build_biconnected_test_graph()
+
+        expected = [2, 5, 7, 8]
+        calculated = find_articulation_vertices(graph)
+        calculated.sort()
+
+        self.assertEqual(expected, calculated)
 

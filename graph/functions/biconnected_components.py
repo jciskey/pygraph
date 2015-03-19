@@ -30,8 +30,30 @@ def find_biconnected_components(graph, alter_in_place=False):
 
 
 def find_articulation_vertices(graph, alter_in_place=False):
-    """Finds all of the articulation vertices within a graph."""
-    root = graph.get_all_node_ids()[0]
+    """Finds all of the articulation vertices within a graph.
+    Returns a list of all articulation vertices within the graph.
+    Returns an empty list for an empty graph.
+    """
+    if alter_in_place:
+        local_graph = graph
+    else:
+        local_graph = copy.deepcopy(graph)
+
+    articulation_vertices = []
+
+    all_nodes = local_graph.get_all_node_ids()
+    if len(all_nodes) == 0:
+        return articulation_vertices
+
+    # Run the algorithm on each of the connected components of the graph
+    components = get_connected_components_as_subgraphs(local_graph)
+    for component in components:
+        # --Call the internal articulation vertices function to find
+        # --the node list for this particular connected component
+        vertex_list = _internal_get_cut_vertex_list(component)
+        articulation_vertices.extend(vertex_list)
+
+    return articulation_vertices
 
 
 # Helper functions
@@ -86,8 +108,9 @@ def _internal_get_biconnected_components_edge_lists(graph):
                 dfs_count += 1
                 depth[u] = dfs_count
                 low[u] = depth[u]
-                v = frame['remaining_children'].pop()
-                frame['v'] = v
+                if len(frame['remaining_children']) > 0:
+                    v = frame['remaining_children'].pop()
+                    frame['v'] = v
 
             if v is None:
                 # --u has no neighbor nodes
@@ -163,3 +186,100 @@ def output_component(graph, edge_stack, u, v):
             break
 
     return edge_list
+
+def _internal_get_cut_vertex_list(graph):
+    """Works on a single connected component to produce the node list of cut vertices.
+    Returns a list of nodes.
+    Returns an empty list if there are no nodes in the graph (i.e. if it's an empty graph).
+    """
+    list_of_cut_vertices = set()
+    if len(graph.get_all_node_ids()) == 0:
+        return list(list_of_cut_vertices)
+
+    dfs_count = 0
+    root_dfs_count = 1
+    dfs_stack = deque()
+    visited = defaultdict(lambda: False)
+    parent = defaultdict(lambda: None)
+    children = defaultdict(lambda: [])
+    depth = {}
+    low = {}
+    preorder_processed = defaultdict(lambda: False)
+    postorder_processed = defaultdict(lambda: False)
+
+    # We're simulating a recursive DFS with an explicit stack, since Python has a really small function stack
+    unvisited_nodes = set(graph.get_all_node_ids())
+    while len(unvisited_nodes) > 0:
+        # --Initialize the first stack frame, simulating the DFS call on the root node
+        u = unvisited_nodes.pop()
+        parent[u] = u
+        stack_frame = {
+            'u': u,
+            'v': None,
+            'remaining_children': graph.neighbors(u)
+        }
+        dfs_stack.appendleft(stack_frame)
+
+        while len(dfs_stack) > 0:
+            frame = dfs_stack.popleft()
+            u = frame['u']
+            v = frame['v']
+
+            if not visited[u]:
+                if u in unvisited_nodes:
+                    unvisited_nodes.remove(u)
+                visited[u] = True
+                dfs_count += 1
+                depth[u] = dfs_count
+                low[u] = depth[u]
+                if len(frame['remaining_children']) > 0:
+                    v = frame['remaining_children'].pop()
+                    frame['v'] = v
+
+            if v is None:
+                # --u has no neighbor nodes
+                continue
+
+            if not preorder_processed[v]:
+                # --This is the preorder processing, done for each neighbor node ''v'' of u
+                parent[v] = u
+                children[u].append(v)
+                preorder_processed[v] = True
+                # print 'preorder for {}'.format(v)
+                dfs_stack.appendleft(frame)
+
+                # --Simulate the recursion to call the DFS on v
+                new_frame = {
+                    'u': v,
+                    'v': None,
+                    'remaining_children': graph.neighbors(v)
+                }
+                dfs_stack.appendleft(new_frame)
+                continue
+
+            elif not postorder_processed[v] and u == parent[v]:
+                # --This is the postorder processing, done for each neighbor node ''v'' of u
+                if low[v] >= depth[u] and depth[u] > 1:
+                    list_of_cut_vertices.add(u)
+                low[u] = min(low[u], low[v])
+                postorder_processed[v] = True
+                # print 'postorder for {}'.format(v)
+
+            elif visited[v] and (parent[u] != v) and (depth[v] < depth[u]):
+                # (u,v) is a backedge from u to its ancestor v
+                low[u] = min(low[u], depth[v])
+
+            if len(frame['remaining_children']) > 0:
+                # --Continue onto the next neighbor node of u
+                v = frame['remaining_children'].pop()
+                frame['v'] = v
+                dfs_stack.appendleft(frame)
+
+    # The root node gets special treatment; it's a cut vertex iff it has multiple children
+    if len(children[root_dfs_count]) > 1:
+        for node_id, dfs in depth.items():
+            if dfs == root_dfs_count:
+                list_of_cut_vertices.add(node_id)
+                break
+
+    return list(list_of_cut_vertices)

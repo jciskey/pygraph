@@ -43,6 +43,34 @@ def build_2_node_graph():
     return graph
 
 
+def build_3_node_line_graph():
+    """Builds a 3-node, 2-edge connected line graph for testing."""
+    graph = UndirectedGraph()
+
+    graph.new_node()
+    graph.new_node()
+    graph.new_node()
+
+    graph.new_edge(1, 2)
+    graph.new_edge(2, 3)
+
+    return graph
+
+
+def build_3_node_line_root_articulation_graph():
+    """Builds a 3-node, 2-edge connected line graph for testing, where the root node is the articulation vertex."""
+    graph = UndirectedGraph()
+
+    graph.new_node()
+    graph.new_node()
+    graph.new_node()
+
+    graph.new_edge(1, 2)
+    graph.new_edge(1, 3)
+
+    return graph
+
+
 def build_biconnected_test_graph():
     """Builds a graph with multiple biconnected components that gets used for testing."""
     graph = UndirectedGraph()
