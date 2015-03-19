@@ -8,8 +8,8 @@ By implementing the library in pure Python, it can be installed without any depe
 Common algorithms supported will include:
 * DFS
 * BFS
-* Connected Components
-* Biconnected Components
+* Connected Components **Implemented**
+* Biconnected Components **Implemented**
 * Articulation Vertices
 * Minimum Spanning Tree
 
