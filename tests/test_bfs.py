@@ -70,7 +70,7 @@ class BreadthFirstSearchTest(unittest.TestCase):
 
     def test_bfs_with_disconnected_graph_contains_all_nodes(self):
         """Does the ''breadth_first_search'' function return all the nodes for a disconnected graph?"""
-        graph = utility_functions.build_biconnected_test_graph()
+        graph = utility_functions.build_disconnected_test_graph()
 
         all_nodes = graph.get_all_node_ids()
         ordering = breadth_first_search(graph, 1)
