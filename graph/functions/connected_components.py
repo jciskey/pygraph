@@ -2,7 +2,7 @@
 
 from collections import deque
 
-from .helpers import make_subgraph
+from ..helpers import make_subgraph
 
 
 def get_connected_components(graph):

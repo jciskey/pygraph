@@ -5,8 +5,11 @@ from .classes import DirectedGraph, UndirectedGraph
 from .functions import (a_star_search, breadth_first_search, depth_first_search,
                         is_planar,
                         get_connected_components, get_connected_components_as_subgraphs,
-                        find_articulation_vertices, find_biconnected_components,
-                        make_subgraph, merge_graphs)
+                        find_articulation_vertices, find_biconnected_components)
+from .helpers import (make_subgraph, merge_graphs)
+
+# --For testing
+from .helpers import DisjointSet
 
 # Predefined graph factories
 from .predefined_graphs import (build_triangle_graph, build_square_graph, build_diamond_graph,
