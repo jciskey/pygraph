@@ -2,11 +2,58 @@
 
 import unittest
 
-from ..graph import a_star_search
+from ..graph import UndirectedGraph, a_star_search
 from . import utility_functions
+from ..graph.exceptions import NonexistentNodeError
 
 
 class AStarSearchTest(unittest.TestCase):
+    def test_a_star_search_with_invalid_nodes(self):
+        """Does the ''a_star_search'' function throw an error for invalid nodes?"""
+        graph = UndirectedGraph()
+
+        # --Test 1: Empty graph, both nodes invalid
+        node_a = 1
+        node_b = 2
+
+        try:
+            path = a_star_search(graph, node_a, node_b)
+        except NonexistentNodeError:
+            pass
+        else:
+            self.fail('a_star_search function accepts an invalid node id for an empty graph')
+
+        # --Test 2: Single-node graph, node_b invalid
+        node_a = graph.new_node()
+
+        try:
+            path = a_star_search(graph, node_a, node_b)
+        except NonexistentNodeError:
+            pass
+        else:
+            self.fail('a_star_search function accepts an invalid node id {}'.format(node_b))
+
+        # --Test 3: Single-node graph, node_a invalid
+        node_b = graph.new_node()
+        graph.delete_node(node_a)
+
+        try:
+            path = a_star_search(graph, node_a, node_b)
+        except NonexistentNodeError:
+            pass
+        else:
+            self.fail('a_star_search function accepts an invalid node id {}'.format(node_a))
+
+        # --Test 4: Dual-node graph, both nodes valid
+        node_a = graph.new_node()
+
+        try:
+            path = a_star_search(graph, node_a, node_b)
+        except NonexistentNodeError:
+            self.fail('a_star_search function throws an error with valid nodes')
+        else:
+            pass
+
     def test_a_star_search_with_single_path(self):
         """Does the ''a_star_search'' function return a valid path when there's only one possible path?"""
         graph = utility_functions.build_simple_test_graph()

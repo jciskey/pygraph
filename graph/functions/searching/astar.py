@@ -1,13 +1,19 @@
 """Implements A* Search functionality."""
 
 from ...helpers import PriorityQueue
-
+from ...exceptions import NonexistentNodeError
 
 def a_star_search(graph, start, goal):
     """Runs an A* search on the specified graph to find a path from the ''start'' node to the ''goal'' node.
     Returns a list of nodes specifying a minimal path between the two nodes.
     If no path exists (disconnected components), returns an empty list.
     """
+    all_nodes = graph.get_all_node_ids()
+    if start not in all_nodes:
+        raise NonexistentNodeError(start)
+    if goal not in all_nodes:
+        raise NonexistentNodeError(goal)
+
     came_from, cost_so_far, goal_reached = _a_star_search_internal(graph, start, goal)
     if goal_reached:
         path = reconstruct_path(came_from, start, goal)
