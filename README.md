@@ -6,8 +6,8 @@ Pygraph aims to be an easy-to-use and functional graph library that doesn't sacr
 By implementing the library in pure Python, it can be installed without any dependencies aside from the Python core, enabling maximum ease of use.
 
 Common algorithms supported will include:
-* DFS
-* BFS
+* DFS (**Implemented**)
+* BFS (**Implemented**)
 * Connected Components (**Implemented**)
 * Biconnected Components (**Implemented**)
 * Articulation Vertices (**Implemented**)
