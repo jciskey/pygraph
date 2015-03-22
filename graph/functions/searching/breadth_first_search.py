@@ -9,38 +9,39 @@ def breadth_first_search(graph, root_node=None):
         Returns a list of nodes, in the order that they were reached.
     """
     ordering = []
-    queue = deque()
-    visited = defaultdict(lambda: False)
 
     all_nodes = graph.get_all_node_ids()
-    to_visit = set(all_nodes)
     if not all_nodes:
         return ordering
+
+    queue = deque()
+    discovered = defaultdict(lambda: False)
+    to_visit = set(all_nodes)
 
     if root_node is None:
         root_node = all_nodes[0]
 
+    discovered[root_node] = True
     queue.appendleft(root_node)
 
     # We need to make sure we visit all the nodes, including disconnected ones
     while True:
         # BFS Main Loop
         while len(queue) > 0:
-            current_node = queue.popleft()
+            current_node = queue.pop()
+            ordering.append(current_node)
+            to_visit.remove(current_node)
 
-            if not visited[current_node]:
-                visited[current_node] = True
-                ordering.append(current_node)
-                to_visit.remove(current_node)
-
-                for n in graph.neighbors(current_node):
-                    if not visited[n]:
-                        queue.appendleft(n)
+            for n in graph.neighbors(current_node):
+                if not discovered[n]:
+                    discovered[n] = True
+                    queue.appendleft(n)
 
         # New root node if we still have more nodes
         if len(to_visit) > 0:
             node = to_visit.pop()
-            to_visit.add(node)
+            to_visit.add(node)  # --We need this here because we remove the node as part of the BFS algorithm
+            discovered[node] = True
             queue.appendleft(node)
         else:
             break

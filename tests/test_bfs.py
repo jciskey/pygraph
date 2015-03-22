@@ -36,26 +36,6 @@ class BreadthFirstSearchTest(unittest.TestCase):
 
         self.assertEqual(expected, ordering)
 
-    def test_bfs_depth_ordering(self):
-        """Does the ''breadth_first_search'' function return nodes in a proper ordering (unvisited neighbors lower)?"""
-        graph = utility_functions.build_biconnected_test_graph()
-
-        ordering = breadth_first_search(graph, 1)
-        # node_lookup_by_index = dict(zip(range(1, len(ordering) + 1), ordering))
-        items_sorted_by_bfs_index = zip(ordering, range(1, len(ordering) + 1))
-        index_lookup_by_node = dict(items_sorted_by_bfs_index)
-
-        visited_by_node = defaultdict(lambda: False)
-        for node_id, bfs_index in items_sorted_by_bfs_index:
-            visited_by_node[node_id] = True
-            neighbor_nodes = graph.neighbors(node_id)
-            for n in neighbor_nodes:
-                neighbor_index = index_lookup_by_node[n]
-                if visited_by_node[n]:
-                    self.assertLess(neighbor_index, bfs_index)
-                else:
-                    self.assertLess(bfs_index, neighbor_index)
-
     def test_bfs_with_connected_graph_contains_all_nodes(self):
         """Does the ''breadth_first_search'' function return all the nodes for a connected graph?"""
         graph = utility_functions.build_biconnected_test_graph()
