@@ -1,6 +1,6 @@
 """Implements A* Search functionality."""
 
-import heapq
+from ...helpers import PriorityQueue
 
 
 def a_star_search(graph, start, goal):
@@ -18,20 +18,6 @@ def a_star_search(graph, start, goal):
 
 
 # A* Search Helpers
-class PriorityQueue:
-    def __init__(self):
-        self.elements = []
-
-    def empty(self):
-        return len(self.elements) == 0
-
-    def put(self, item, priority):
-        heapq.heappush(self.elements, (priority, item))
-
-    def get(self):
-        return heapq.heappop(self.elements)[1]
-
-
 def heuristic(a, b):
     return 1
 
