@@ -1,6 +1,6 @@
 """Provides utility functions for unit testing."""
 
-from ..graph import UndirectedGraph
+from ..graph import UndirectedGraph, build_triangle_graph, merge_graphs
 
 
 def build_simple_test_graph():
@@ -116,5 +116,17 @@ def build_fully_biconnected_test_graph():
 
     # Connect the first and third components to create a ring, converting everything into a single biconnected component
     graph.new_edge(1, 12)
+
+    return graph
+
+
+def build_disconnected_test_graph():
+    """Builds a graph with three disconnected components that gets used for testing."""
+    graph = build_triangle_graph()
+    g2 = build_triangle_graph()
+    g3 = build_triangle_graph()
+
+    merge_graphs(graph, g2)
+    merge_graphs(graph, g3)
 
     return graph
