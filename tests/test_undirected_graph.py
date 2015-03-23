@@ -50,7 +50,6 @@ class UDGTest(unittest.TestCase):
         else:
             pass
 
-
     def test_new_edge_return_value(self):
         """Does the ''new_edge'' method return an edge id?"""
         graph = UndirectedGraph()
@@ -142,13 +141,15 @@ class UDGTest(unittest.TestCase):
         for node_a, node_b, expected in pairs:
             actual = graph.adjacent(node_a, node_b)
             self.assertEqual(actual, expected)
+            actual = graph.adjacent(node_b, node_a)
+            self.assertEqual(actual, expected)
 
     def test_existent_edge_cost(self):
         """Does the ''edge_cost'' function return the appropriate cost for an edge that
         exists in an undirected graph?"""
         graph = utility_functions.build_simple_test_graph()
 
-        # We currently don't use edge costs, so any existent edge should have a cost of 1
+        # Edges default to cost of 1
         nodes_with_edges = [
             (1, 2),
             (1, 4),

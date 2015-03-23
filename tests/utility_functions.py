@@ -1,11 +1,14 @@
 """Provides utility functions for unit testing."""
 
-from ..graph import UndirectedGraph, build_triangle_graph, merge_graphs
+from ..graph import DirectedGraph, UndirectedGraph, build_triangle_graph, merge_graphs
 
 
-def build_simple_test_graph():
+def build_simple_test_graph(directed=False):
     """Builds a simple undirected graph that gets used for testing."""
-    graph = UndirectedGraph()
+    if directed:
+        graph = DirectedGraph()
+    else:
+        graph = UndirectedGraph()
 
     # There are 7 vertices in the test graph
     for _ in xrange(7):
@@ -24,17 +27,23 @@ def build_simple_test_graph():
     return graph
 
 
-def build_single_node_graph():
+def build_single_node_graph(directed=False):
     """Builds a graph with a single node for testing."""
-    graph = UndirectedGraph()
+    if directed:
+        graph = DirectedGraph()
+    else:
+        graph = UndirectedGraph()
     graph.new_node()
 
     return graph
 
 
-def build_2_node_graph():
+def build_2_node_graph(directed=False):
     """Builds a 2-node connected graph for testing."""
-    graph = UndirectedGraph()
+    if directed:
+        graph = DirectedGraph()
+    else:
+        graph = UndirectedGraph()
 
     graph.new_node()
     graph.new_node()
@@ -43,9 +52,12 @@ def build_2_node_graph():
     return graph
 
 
-def build_3_node_line_graph():
+def build_3_node_line_graph(directed=False):
     """Builds a 3-node, 2-edge connected line graph for testing."""
-    graph = UndirectedGraph()
+    if directed:
+        graph = DirectedGraph()
+    else:
+        graph = UndirectedGraph()
 
     graph.new_node()
     graph.new_node()
@@ -57,9 +69,12 @@ def build_3_node_line_graph():
     return graph
 
 
-def build_3_node_line_root_articulation_graph():
+def build_3_node_line_root_articulation_graph(directed=False):
     """Builds a 3-node, 2-edge connected line graph for testing, where the root node is the articulation vertex."""
-    graph = UndirectedGraph()
+    if directed:
+        graph = DirectedGraph()
+    else:
+        graph = UndirectedGraph()
 
     graph.new_node()
     graph.new_node()
@@ -71,9 +86,12 @@ def build_3_node_line_root_articulation_graph():
     return graph
 
 
-def build_biconnected_test_graph():
+def build_biconnected_test_graph(directed=False):
     """Builds a graph with multiple biconnected components that gets used for testing."""
-    graph = UndirectedGraph()
+    if directed:
+        graph = DirectedGraph()
+    else:
+        graph = UndirectedGraph()
 
     # There are 12 vertices in the test graph
     for _ in xrange(12):
@@ -110,7 +128,7 @@ def build_biconnected_test_graph():
     return graph
 
 
-def build_fully_biconnected_test_graph():
+def build_fully_biconnected_test_graph(directed=False):
     """Builds a graph with only one biconnected component that gets used for testing."""
     graph = build_biconnected_test_graph()
 
@@ -120,7 +138,7 @@ def build_fully_biconnected_test_graph():
     return graph
 
 
-def build_disconnected_test_graph():
+def build_disconnected_test_graph(directed=False):
     """Builds a graph with three disconnected components that gets used for testing."""
     graph = build_triangle_graph()
     g2 = build_triangle_graph()
@@ -132,9 +150,12 @@ def build_disconnected_test_graph():
     return graph
 
 
-def build_triangle_graph_with_costs():
+def build_triangle_graph_with_costs(directed=False):
     """Builds a triangle graph with costs for testing."""
-    graph = UndirectedGraph()
+    if directed:
+        graph = DirectedGraph()
+    else:
+        graph = UndirectedGraph()
 
     graph.new_node()
     graph.new_node()
@@ -146,9 +167,12 @@ def build_triangle_graph_with_costs():
 
     return graph
 
-def build_square_test_graph_with_costs():
+def build_square_test_graph_with_costs(directed=False):
     """Builds a square graph with costs for testing."""
-    graph = UndirectedGraph()
+    if directed:
+        graph = DirectedGraph()
+    else:
+        graph = UndirectedGraph()
 
     graph.new_node()
     graph.new_node()
@@ -161,9 +185,12 @@ def build_square_test_graph_with_costs():
 
     return graph
 
-def build_complicated_test_graph_with_one_mst():
+def build_complicated_test_graph_with_one_mst(directed=False):
     """Builds a test graph that has a unique minimum spanning tree."""
-    graph = UndirectedGraph()
+    if directed:
+        graph = DirectedGraph()
+    else:
+        graph = UndirectedGraph()
 
     for _ in xrange(7):
         graph.new_node()
