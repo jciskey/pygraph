@@ -5,7 +5,10 @@ from .classes import DirectedGraph, UndirectedGraph
 from .functions import (a_star_search, breadth_first_search, depth_first_search,
                         is_planar,
                         get_connected_components, get_connected_components_as_subgraphs,
-                        find_articulation_vertices, find_biconnected_components)
+                        find_articulation_vertices, find_biconnected_components,
+                        find_minimum_spanning_tree, find_minimum_spanning_tree_as_subgraph,
+                        find_minimum_spanning_forest, find_minimum_spanning_forest_as_subgraphs)
+
 from .helpers import (make_subgraph, merge_graphs)
 
 # --For testing
@@ -20,4 +23,4 @@ from .predefined_graphs import (build_triangle_graph, build_square_graph, build_
 from .render import graph_to_dot
 
 # Exceptions
-from .exceptions import PygraphError, NonexistentNodeError, NonexistentEdgeError
+from .exceptions import PygraphError, NonexistentNodeError, NonexistentEdgeError, DisconnectedGraphError

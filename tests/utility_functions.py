@@ -131,8 +131,23 @@ def build_disconnected_test_graph():
 
     return graph
 
+
+def build_triangle_graph_with_costs():
+    """Builds a triangle graph with costs for testing."""
+    graph = UndirectedGraph()
+
+    graph.new_node()
+    graph.new_node()
+    graph.new_node()
+
+    graph.new_edge(1, 2, 1)
+    graph.new_edge(2, 3, 2)
+    graph.new_edge(3, 1, 10)
+
+    return graph
+
 def build_square_test_graph_with_costs():
-    """Builds a square graph with costs."""
+    """Builds a square graph with costs for testing."""
     graph = UndirectedGraph()
 
     graph.new_node()
@@ -143,5 +158,27 @@ def build_square_test_graph_with_costs():
     graph.new_edge(1, 4, 10)
     graph.new_edge(2, 3, 3)
     graph.new_edge(3, 4, 1)
+
+    return graph
+
+def build_complicated_test_graph_with_one_mst():
+    """Builds a test graph that has a unique minimum spanning tree."""
+    graph = UndirectedGraph()
+
+    for _ in xrange(7):
+        graph.new_node()
+
+    graph.new_edge(1, 2, 2)  # 1
+    graph.new_edge(1, 3, 4)  # 2
+    graph.new_edge(1, 4, 1)  # 3
+    graph.new_edge(2, 4, 3)  # 4
+    graph.new_edge(2, 5, 10)  #5
+    graph.new_edge(3, 4, 2)  # 6
+    graph.new_edge(3, 6, 5)  # 7
+    graph.new_edge(4, 5, 7)  # 8
+    graph.new_edge(4, 6, 8)  # 9
+    graph.new_edge(4, 7, 4)  # 10
+    graph.new_edge(5, 7, 6)  # 11
+    graph.new_edge(6, 7, 1)  # 12
 
     return graph
