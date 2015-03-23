@@ -7,6 +7,12 @@ class PriorityQueue:
     def __init__(self):
         self.elements = []
 
+    def __str__(self):
+        return str(self.elements)
+
+    def __len__(self):
+        return len(self.elements)
+
     def empty(self):
         return len(self.elements) == 0
 

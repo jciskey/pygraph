@@ -12,6 +12,12 @@ class DisjointSet(object):
         # We are using the implicit parent-pointer structure to store the trees
         self.__forest = {}
 
+    def __len__(self):
+        return self.__set_counter
+
+    def __str__(self):
+        return str(self.__forest)
+
     def add_set(self):
         """Adds a new set to the forest.
         Returns a label by which the new set can be referenced
@@ -22,12 +28,12 @@ class DisjointSet(object):
         self.__set_counter += 1
         return new_label
 
-    def find(self, node):
-        """Finds the set containing node.
+    def find(self, node_label):
+        """Finds the set containing the node_label.
         Returns the set label.
         """
         queue = []
-        current_node = node
+        current_node = node_label
         while self.__forest[current_node] >= 0:
             queue.append(current_node)
             current_node = self.__forest[current_node]
@@ -39,17 +45,17 @@ class DisjointSet(object):
 
         return root_node
 
-    def union(self, node_a, node_b):
+    def union(self, label_a, label_b):
         """Joins two sets into a single new set.
-        set_a, set_b can be any nodes within the sets
+        label_a, label_b can be any nodes within the sets
         """
         # Base case to avoid work
-        if node_a == node_b:
+        if label_a == label_b:
             return
 
         # Find the tree root of each node
-        root_a = self.find(node_a)
-        root_b = self.find(node_b)
+        root_a = self.find(label_a)
+        root_b = self.find(label_b)
 
         # Avoid merging a tree to itself
         if root_a == root_b:
@@ -80,6 +86,3 @@ class DisjointSet(object):
         # --Update the rank of the new tree (if necessary)
         if update_rank:
             self.__forest[larger] -= 1
-
-    def __len__(self):
-        return self.__set_counter
