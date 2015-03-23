@@ -11,7 +11,7 @@ Common algorithms supported will include:
 * Connected Components (**Implemented**)
 * Biconnected Components (**Implemented**)
 * Articulation Vertices (**Implemented**)
-* Minimum Spanning Tree
+* Minimum Spanning Tree (**Implemented**)
 
 Advanced algorithms supported will include:
 * Triconnected Components
