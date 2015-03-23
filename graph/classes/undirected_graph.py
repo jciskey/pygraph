@@ -15,10 +15,10 @@ class UndirectedGraph(DirectedGraph):
         graph.next_edge_id = self.next_edge_id
         return graph
 
-    def new_edge(self, node_a, node_b):
-        """Adds a new, undirected edge between node_a and node_b.
+    def new_edge(self, node_a, node_b, cost=1):
+        """Adds a new, undirected edge between node_a and node_b with a cost.
         Returns the edge id of the new edge."""
-        edge_id = super(UndirectedGraph, self).new_edge(node_a, node_b)
+        edge_id = super(UndirectedGraph, self).new_edge(node_a, node_b, cost)
         self.nodes[node_b]['edges'].append(edge_id)
         return edge_id
 

@@ -4,6 +4,7 @@ import copy
 
 from ..exceptions import NonexistentNodeError, NonexistentEdgeError
 
+
 class DirectedGraph(object):
     nodes = None
     edges = None
@@ -46,8 +47,8 @@ class DirectedGraph(object):
 
         return node_id
 
-    def new_edge(self, node_a, node_b):
-        """Adds a new edge from node_a to node_b.
+    def new_edge(self, node_a, node_b, cost=1):
+        """Adds a new edge from node_a to node_b that has a cost.
         Returns the edge id of the new edge."""
 
         # Verify that both nodes exist in the graph
@@ -65,6 +66,7 @@ class DirectedGraph(object):
 
         edge = {'id': edge_id,
                 'vertices': (node_a, node_b),
+                'cost': cost,
                 'data': {}
         }
 
@@ -88,11 +90,15 @@ class DirectedGraph(object):
     def edge_cost(self, node_a, node_b):
         """Returns the cost of moving between the edge that connects node_a to node_b.
         Returns +inf if no such edge exists."""
-        if not self.adjacent(node_a, node_b):
-            return float('inf')
-        # Since edges don't implement costs currently, the cost to move from one node to another is 1
-        # Replace this with actual calculations if edges begin to implement costs
-        return 1
+        cost = float('inf')
+        node_object_a = self.get_node(node_a)
+        for edge_id in node_object_a['edges']:
+            edge = self.get_edge(edge_id)
+            tpl = (node_a, node_b)
+            if edge['vertices'] == tpl:
+                cost = edge['cost']
+                break
+        return cost
 
     def get_node(self, node_id):
         """Returns the node object identified by "node_id"."""
