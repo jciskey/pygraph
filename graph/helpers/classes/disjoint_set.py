@@ -37,7 +37,7 @@ class DisjointSet(object):
         while self.__forest[current_node] >= 0:
             queue.append(current_node)
             current_node = self.__forest[current_node]
-        root_node = self.__forest[current_node]
+        root_node = current_node
 
         # Path compression
         for n in queue:
