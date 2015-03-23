@@ -97,6 +97,14 @@ def get_vertices_from_edge_list(graph, edge_list):
     return list(node_set)
 
 
+def get_subgraph_from_edge_list(graph, edge_list):
+    """Transforms a list of edges into a subgraph."""
+    node_list = get_vertices_from_edge_list(graph, edge_list)
+    subgraph = make_subgraph(graph, node_list, edge_list)
+
+    return subgraph
+
+
 def merge_graphs(main_graph, addition_graph):
     """Merges an ''addition_graph'' into the ''main_graph''.
     Returns a tuple of dictionaries, mapping old node ids and edge ids to new ids.
