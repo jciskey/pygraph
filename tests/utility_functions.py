@@ -130,3 +130,18 @@ def build_disconnected_test_graph():
     merge_graphs(graph, g3)
 
     return graph
+
+def build_square_test_graph_with_costs():
+    """Builds a square graph with costs."""
+    graph = UndirectedGraph()
+
+    graph.new_node()
+    graph.new_node()
+    graph.new_node()
+    graph.new_node()
+    graph.new_edge(1, 2, 2)
+    graph.new_edge(1, 4, 10)
+    graph.new_edge(2, 3, 3)
+    graph.new_edge(3, 4, 1)
+
+    return graph
