@@ -1,25 +1,21 @@
 """Implements functionality to find biconnected components."""
 
-import copy
 from collections import deque, defaultdict
 
 from .connected_components import get_connected_components_as_subgraphs
+from ..helpers import get_subgraph_from_edge_list
 
 
-def find_biconnected_components(graph, alter_in_place=False):
+def find_biconnected_components(graph):
     """Finds all the biconnected components in a graph.
     Returns a list of lists, each containing the edges that form a biconnected component.
     Returns an empty list for an empty graph.
     """
-    if alter_in_place:
-        local_graph = graph
-    else:
-        local_graph = copy.deepcopy(graph)
 
     list_of_components = []
 
     # Run the algorithm on each of the connected components of the graph
-    components = get_connected_components_as_subgraphs(local_graph)
+    components = get_connected_components_as_subgraphs(graph)
     for component in components:
         # --Call the internal biconnnected components function to find
         # --the edge lists for this particular connected component
@@ -29,24 +25,32 @@ def find_biconnected_components(graph, alter_in_place=False):
     return list_of_components
 
 
-def find_articulation_vertices(graph, alter_in_place=False):
+def find_biconnected_components_as_subgraphs(graph):
+    """Finds the biconnected components and returns them as subgraphs."""
+    list_of_graphs = []
+
+    list_of_components = find_biconnected_components(graph)
+    for edge_list in list_of_components:
+        subgraph = get_subgraph_from_edge_list(graph, edge_list)
+        list_of_graphs.append(subgraph)
+
+    return list_of_graphs
+
+
+def find_articulation_vertices(graph):
     """Finds all of the articulation vertices within a graph.
     Returns a list of all articulation vertices within the graph.
     Returns an empty list for an empty graph.
     """
-    if alter_in_place:
-        local_graph = graph
-    else:
-        local_graph = copy.deepcopy(graph)
 
     articulation_vertices = []
 
-    all_nodes = local_graph.get_all_node_ids()
+    all_nodes = graph.get_all_node_ids()
     if len(all_nodes) == 0:
         return articulation_vertices
 
     # Run the algorithm on each of the connected components of the graph
-    components = get_connected_components_as_subgraphs(local_graph)
+    components = get_connected_components_as_subgraphs(graph)
     for component in components:
         # --Call the internal articulation vertices function to find
         # --the node list for this particular connected component
@@ -186,6 +190,7 @@ def output_component(graph, edge_stack, u, v):
             break
 
     return edge_list
+
 
 def _internal_get_cut_vertex_list(graph):
     """Works on a single connected component to produce the node list of cut vertices.
