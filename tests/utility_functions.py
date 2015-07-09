@@ -1,6 +1,8 @@
 """Provides utility functions for unit testing."""
 
-from ..graph import DirectedGraph, UndirectedGraph, build_triangle_graph, merge_graphs
+from ..graph import (DirectedGraph, UndirectedGraph,
+                     build_triangle_graph, build_k5_graph, build_k33_graph, build_5_cycle_graph,
+                     merge_graphs)
 
 
 def build_simple_test_graph(directed=False):
@@ -128,7 +130,7 @@ def build_biconnected_test_graph(directed=False):
     return graph
 
 
-def build_fully_biconnected_test_graph(directed=False):
+def build_fully_biconnected_test_graph():
     """Builds a graph with only one biconnected component that gets used for testing."""
     graph = build_biconnected_test_graph()
 
@@ -138,7 +140,7 @@ def build_fully_biconnected_test_graph(directed=False):
     return graph
 
 
-def build_disconnected_test_graph(directed=False):
+def build_disconnected_test_graph():
     """Builds a graph with three disconnected components that gets used for testing."""
     graph = build_triangle_graph()
     g2 = build_triangle_graph()
@@ -167,6 +169,7 @@ def build_triangle_graph_with_costs(directed=False):
 
     return graph
 
+
 def build_square_test_graph_with_costs(directed=False):
     """Builds a square graph with costs for testing."""
     if directed:
@@ -185,6 +188,7 @@ def build_square_test_graph_with_costs(directed=False):
 
     return graph
 
+
 def build_complicated_test_graph_with_one_mst(directed=False):
     """Builds a test graph that has a unique minimum spanning tree."""
     if directed:
@@ -199,7 +203,7 @@ def build_complicated_test_graph_with_one_mst(directed=False):
     graph.new_edge(1, 3, 4)  # 2
     graph.new_edge(1, 4, 1)  # 3
     graph.new_edge(2, 4, 3)  # 4
-    graph.new_edge(2, 5, 10)  #5
+    graph.new_edge(2, 5, 10)  # 5
     graph.new_edge(3, 4, 2)  # 6
     graph.new_edge(3, 6, 5)  # 7
     graph.new_edge(4, 5, 7)  # 8
@@ -207,5 +211,60 @@ def build_complicated_test_graph_with_one_mst(directed=False):
     graph.new_edge(4, 7, 4)  # 10
     graph.new_edge(5, 7, 6)  # 11
     graph.new_edge(6, 7, 1)  # 12
+
+    return graph
+
+
+def build_non_planar_test_graph_with_k5_subgraph():
+    """Builds a test graph that contains K5 as a subgraph, and is thus non-planar."""
+    graph = build_triangle_graph()
+    addition_graph = build_k5_graph()
+
+    merge_graphs(graph, addition_graph)
+
+    return graph
+
+
+def build_non_planar_test_graph_with_k33_subgraph():
+    """Builds a test graph that contains K3,3 as a subgraph, and is thus non-planar."""
+    graph = build_triangle_graph()
+    addition_graph = build_k33_graph()
+
+    merge_graphs(graph, addition_graph)
+
+    return graph
+
+
+def build_non_planar_disconnected_test_graph_with_k5_subgraph():
+    """Builds a disconnected test graph that contains K5 as a subgraph, and is thus non-planar."""
+    graph = build_triangle_graph()
+    addition_graph = build_k5_graph()
+    addition_graph2 = build_k5_graph()
+
+    merge_graphs(graph, addition_graph)
+    merge_graphs(graph, addition_graph2)
+
+    return graph
+
+
+def build_petersons_graph():
+    """Builds a non-planar test graph that does not contain K5 or K3,3 as a subgraph (Peterson's Graph)."""
+    graph = build_5_cycle_graph()
+
+    # --Build a 5-pointed star
+    for _ in xrange(5):
+        graph.new_node()
+    graph.new_edge(6, 8)
+    graph.new_edge(6, 9)
+    graph.new_edge(7, 9)
+    graph.new_edge(7, 10)
+    graph.new_edge(8, 10)
+
+    # --Connect it to the outside 5-cycle graph
+    graph.new_edge(1, 6)
+    graph.new_edge(2, 7)
+    graph.new_edge(3, 8)
+    graph.new_edge(4, 9)
+    graph.new_edge(5, 10)
 
     return graph

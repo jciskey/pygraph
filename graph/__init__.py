@@ -2,7 +2,9 @@
 from .classes import DirectedGraph, UndirectedGraph
 
 # Useful Functions
-from .functions import (a_star_search, breadth_first_search, depth_first_search,
+from .functions import (a_star_search,
+                        breadth_first_search,
+                        depth_first_search, depth_first_search_with_parent_data,
                         is_planar,
                         get_connected_components, get_connected_components_as_subgraphs,
                         find_articulation_vertices, find_biconnected_components,

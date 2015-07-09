@@ -8,11 +8,19 @@ def depth_first_search(graph, root_node=None):
         If root_node is not None, it will be used as the root for the search tree.
         Returns a list of nodes, in the order that they were reached.
     """
+    ordering, parent_lookup, children_lookup = depth_first_search_with_parent_data(graph, root_node)
+    return ordering
+
+
+def depth_first_search_with_parent_data(graph, root_node=None):
+    """Performs a depth-first search, but also returns a parent lookup dict and a children lookup dict."""
     ordering = []
+    parent_lookup = {}
+    children_lookup = defaultdict(lambda: [])
 
     all_nodes = graph.get_all_node_ids()
     if not all_nodes:
-        return ordering
+        return ordering, parent_lookup, children_lookup
 
     stack = deque()
     discovered = defaultdict(lambda: False)
@@ -23,6 +31,7 @@ def depth_first_search(graph, root_node=None):
 
     # --Initialize the stack, simulating the DFS call on the root node
     stack.appendleft(root_node)
+    parent_lookup[root_node] = root_node
 
     # We're using a non-recursive implementation of DFS, since Python isn't great for deep recursion
     while True:
@@ -38,6 +47,8 @@ def depth_first_search(graph, root_node=None):
                 neighbors = graph.neighbors(u)
                 for n in neighbors:
                     stack.appendleft(n)
+                    parent_lookup[n] = u
+                    children_lookup[u].append(n)
 
         # While there are still nodes that need visiting, repopulate the stack
         if len(unvisited_nodes) > 0:
@@ -46,4 +57,4 @@ def depth_first_search(graph, root_node=None):
         else:
             break
 
-    return ordering
+    return ordering, parent_lookup, children_lookup
