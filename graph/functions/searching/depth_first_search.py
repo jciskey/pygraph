@@ -12,8 +12,9 @@ def depth_first_search(graph, root_node=None):
     return ordering
 
 
-def depth_first_search_with_parent_data(graph, root_node=None):
-    """Performs a depth-first search, but also returns a parent lookup dict and a children lookup dict."""
+def depth_first_search_with_parent_data(graph, root_node = None, adjacency_lists = None):
+    """Performs a depth-first search with visiting order of nodes determined by provided adjacency lists,
+     and also returns a parent lookup dict and a children lookup dict."""
     ordering = []
     parent_lookup = {}
     children_lookup = defaultdict(lambda: [])
@@ -28,6 +29,11 @@ def depth_first_search_with_parent_data(graph, root_node=None):
 
     if root_node is None:
         root_node = all_nodes[0]
+
+    if adjacency_lists is None:
+        adj = lambda v: graph.neighbors(v)
+    else:
+        adj = lambda v: adjacency_lists[v]
 
     # --Initialize the stack, simulating the DFS call on the root node
     stack.appendleft(root_node)
@@ -44,8 +50,10 @@ def depth_first_search_with_parent_data(graph, root_node=None):
                 if u in unvisited_nodes:
                     unvisited_nodes.remove(u)
                 ordering.append(u)
-                neighbors = graph.neighbors(u)
-                for n in neighbors:
+                neighbors = adj(u)
+                # When adding the new nodes to the stack, we want to add them in reverse order so that
+                # the order the nodes are visited is the same as with a recursive DFS implementation
+                for n in neighbors[::-1]:
                     stack.appendleft(n)
                     parent_lookup[n] = u
                     children_lookup[u].append(n)
