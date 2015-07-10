@@ -168,58 +168,12 @@ def __get_lowpoints(node, dfs_data):
 
     ordering_lookup = dfs_data['ordering_lookup']
 
-    #t_u = __descendant_neighbors(node, dfs_data)
     t_u = T(node, dfs_data)
     sorted_t_u = sorted(t_u, key=lambda a: ordering_lookup[a])
     lowpoint_1 = sorted_t_u[0]
     lowpoint_2 = sorted_t_u[1]
 
     return lowpoint_1, lowpoint_2
-
-
-def __descendant_neighbors(node, dfs_data):
-    """Calculates all the neighbors of a list of descendants."""
-    list_of_descendants = S(node, dfs_data)
-
-    neighbors_set = set()
-
-    for d in list_of_descendants:
-        nodes = A(d, dfs_data)
-        for n in nodes:
-            neighbors_set.add(n)
-
-    return list(neighbors_set)
-
-
-def __get_descendants(node, dfs_data):
-    """Gets the descendants of a node."""
-    list_of_descendants = []
-
-    stack = deque()
-
-    children_lookup = dfs_data['children_lookup']
-
-    current_node = node
-    children = children_lookup[current_node]
-    dfs_current_node = D(current_node, dfs_data)
-    for n in children:
-        dfs_child = D(n, dfs_data)
-        # Validate that the child node is actually a descendant and not an ancestor
-        if dfs_child > dfs_current_node:
-            stack.append(n)
-
-    while len(stack) > 0:
-        current_node = stack.pop()
-        list_of_descendants.append(current_node)
-        children = children_lookup[current_node]
-        dfs_current_node = D(current_node, dfs_data)
-        for n in children:
-            dfs_child = D(n, dfs_data)
-            # Validate that the child node is actually a descendant and not an ancestor
-            if dfs_child > dfs_current_node:
-                stack.append(n)
-
-    return list_of_descendants
 
 
 def __edge_weight(edge_id, dfs_data):
@@ -262,23 +216,58 @@ def is_type_II_branch(u, v, dfs_data):
     return False
 
 
+def __get_descendants(node, dfs_data):
+    """Gets the descendants of a node."""
+    list_of_descendants = []
+
+    stack = deque()
+
+    children_lookup = dfs_data['children_lookup']
+
+    current_node = node
+    children = children_lookup[current_node]
+    dfs_current_node = D(current_node, dfs_data)
+    for n in children:
+        dfs_child = D(n, dfs_data)
+        # Validate that the child node is actually a descendant and not an ancestor
+        if dfs_child > dfs_current_node:
+            stack.append(n)
+
+    while len(stack) > 0:
+        current_node = stack.pop()
+        list_of_descendants.append(current_node)
+        children = children_lookup[current_node]
+        dfs_current_node = D(current_node, dfs_data)
+        for n in children:
+            dfs_child = D(n, dfs_data)
+            # Validate that the child node is actually a descendant and not an ancestor
+            if dfs_child > dfs_current_node:
+                stack.append(n)
+
+    return list_of_descendants
+
+
 # Wrapper functions -- used to keep the syntax roughly the same as that used in the paper
 
 def A(u, dfs_data):
     """The adjacency function."""
     return dfs_data['graph'].neighbors(u)
 
+
 def a(v, dfs_data):
     """The ancestor function."""
     return dfs_data['parent_lookup'][v]
+
 
 def D(u, dfs_data):
     """The DFS-numbering function."""
     return dfs_data['ordering_lookup'][u]
 
+
 def S(u, dfs_data):
     """The set of all descendants of u."""
     return __get_descendants(u, dfs_data)
+
 
 def S_star(u, dfs_data):
     """The set of all descendants of u, with u added."""
@@ -287,17 +276,21 @@ def S_star(u, dfs_data):
         s_u.append(u)
     return s_u
 
+
 def T(u, dfs_data):
     """T(u) consists of all vertices adjacent to u or any descendant of u."""
     return list(set([w for v in S_star(u, dfs_data) for w in A(v, dfs_data)]))
+
 
 def L1(v, dfs_data):
     """The L1 lowpoint of the node."""
     return dfs_data['lowpoint_1_lookup'][v]
 
+
 def L2(v, dfs_data):
     """The L2 lowpoint of the node."""
     return dfs_data['lowpoint_2_lookup'][v]
+
 
 def wt(u, v, dfs_data):
     """The wt_u[v] function used in the paper."""
@@ -305,4 +298,3 @@ def wt(u, v, dfs_data):
     edge_id = dfs_data['graph'].get_first_edge_id_by_node_ids(u, v)
     # Pull the weight of that edge
     return dfs_data['edge_weights'][edge_id]
-
