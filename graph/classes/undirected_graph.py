@@ -13,6 +13,8 @@ class UndirectedGraph(DirectedGraph):
         graph.edges = copy.deepcopy(self.edges)
         graph.next_node_id = self.next_node_id
         graph.next_edge_id = self.next_edge_id
+        graph.__num_nodes = self.__num_nodes
+        graph.__num_edges = self.__num_edges
         return graph
 
     def new_edge(self, node_a, node_b, cost=1):
@@ -56,6 +58,8 @@ class UndirectedGraph(DirectedGraph):
 
         # Remove the edge from the edge list
         del self.edges[edge_id]
+
+        self.__num_edges -= 1
 
     def move_edge_target(self, edge_id, node_a):
         """Moves an edge so that it targets node_a."""

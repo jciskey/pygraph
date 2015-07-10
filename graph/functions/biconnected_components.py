@@ -70,8 +70,8 @@ def _internal_get_biconnected_components_edge_lists(graph):
     """
     list_of_components = []
 
-    num_nodes = len(graph.get_all_node_ids())
-    num_edges = len(graph.get_all_edge_ids())
+    num_nodes = graph.num_nodes()
+    num_edges = graph.num_edges()
     if num_nodes <= 2:
         if num_edges == 1:
             list_of_components.append(graph.get_all_edge_ids())
@@ -198,7 +198,7 @@ def _internal_get_cut_vertex_list(graph):
     Returns an empty list if there are no nodes in the graph (i.e. if it's an empty graph).
     """
     list_of_cut_vertices = set()
-    if len(graph.get_all_node_ids()) == 0:
+    if graph.num_nodes() == 0:
         return list(list_of_cut_vertices)
 
     dfs_count = 0

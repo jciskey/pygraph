@@ -24,20 +24,19 @@ def is_planar(graph):
 def __is_subgraph_planar(graph):
     """Internal function to determine if a subgraph is planar."""
     # --First pass: Determine edge and vertex counts validate Euler's Formula
-    all_nodes = graph.get_all_node_ids()
-    all_edges = graph.get_all_edge_ids()
-
-    num_nodes = len(all_nodes)
-    num_edges = len(all_edges)
+    num_nodes = graph.num_nodes()
+    num_edges = graph.num_edges()
 
     # --We can guarantee that if there are 4 or less nodes, then the graph is planar
-    # --A 4-node simple graph has a maximum of 6 possible edges; this will always satisfy Euler's Formula:
+    # --A 4-node simple graph has a maximum of 6 possible edges (K4); this will always satisfy Euler's Formula:
     # -- 6 <= 3(4 - 2)
     if num_nodes < 5:
         return True
 
     if num_edges > 3*(num_nodes - 2):
         return False
+
+    # --At this point, we have no choice but to run the calculation the hard way
 
     return True
 
@@ -181,4 +180,4 @@ def __edge_weight(edge_id, graph, ordering_lookup, parent_lookup, edge_lookup, l
     elif parent_lookup[v] == u and low_2 < u:
         return 2*ordering_lookup[low_1] + 1
     else:
-        return 2*len(graph.get_all_node_ids()) + 1
+        return 2*graph.num_nodes() + 1

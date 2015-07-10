@@ -12,9 +12,9 @@ def find_minimum_spanning_tree(graph):
     """
     mst = []
 
-    if len(graph.get_all_node_ids()) == 0:
+    if graph.num_nodes() == 0:
         return mst
-    if len(graph.get_all_edge_ids()) == 0:
+    if graph.num_edges() == 0:
         return mst
 
     connected_components = get_connected_components(graph)
@@ -41,9 +41,9 @@ def find_minimum_spanning_forest(graph):
     """
     msf = []
 
-    if len(graph.get_all_node_ids()) == 0:
+    if graph.num_nodes() == 0:
         return msf
-    if len(graph.get_all_edge_ids()) == 0:
+    if graph.num_edges() == 0:
         return msf
 
     connected_components = get_connected_components_as_subgraphs(graph)

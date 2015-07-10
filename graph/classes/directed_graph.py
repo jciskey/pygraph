@@ -14,6 +14,8 @@ class DirectedGraph(object):
     def __init__(self):
         self.nodes = {}
         self.edges = {}
+        self.__num_nodes = 0
+        self.__num_edges = 0
 
     def __deepcopy__(self, memo=None):
         graph = DirectedGraph()
@@ -21,7 +23,17 @@ class DirectedGraph(object):
         graph.edges = copy.deepcopy(self.edges)
         graph.next_node_id = self.next_node_id
         graph.next_edge_id = self.next_edge_id
+        graph.__num_nodes = self.__num_nodes
+        graph.__num_edges = self.__num_edges
         return graph
+
+    def num_nodes(self):
+        """Returns the current number of nodes in the graph."""
+        return self.__num_nodes
+
+    def num_edges(self):
+        """Returns the current number of edges in the graph."""
+        return self.__num_edges
 
     def generate_node_id(self):
         node_id = self.next_node_id
@@ -44,6 +56,8 @@ class DirectedGraph(object):
         }
 
         self.nodes[node_id] = node
+
+        self.__num_nodes += 1
 
         return node_id
 
@@ -72,6 +86,8 @@ class DirectedGraph(object):
 
         self.edges[edge_id] = edge
         self.nodes[node_a]['edges'].append(edge_id)
+
+        self.__num_edges += 1
 
         return edge_id
 
@@ -147,6 +163,8 @@ class DirectedGraph(object):
         # Remove the edge from the edge list
         del self.edges[edge_id]
 
+        self.__num_edges -= 1
+
     def delete_edge_by_nodes(self, node_a, node_b):
         """Removes all the edges from node_a to node_b from the graph."""
         node = self.get_node(node_a)
@@ -177,6 +195,8 @@ class DirectedGraph(object):
 
         # Remove the node from the node list
         del self.nodes[node_id]
+
+        self.__num_nodes -= 1
 
     def move_edge_source(self, edge_id, node_a, node_b):
         """Moves an edge originating from node_a so that it originates from node_b."""
