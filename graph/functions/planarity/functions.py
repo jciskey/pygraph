@@ -3,6 +3,7 @@
 
 from ..connected_components import get_connected_components_as_subgraphs
 from ..biconnected_components import find_biconnected_components_as_subgraphs
+from .kocay_algorithm import kocay_planarity_test
 
 
 def is_planar(graph):
@@ -35,7 +36,6 @@ def __is_subgraph_planar(graph):
         return False
 
     # --At this point, we have no choice but to run the calculation the hard way
-
-    return True
+    return kocay_planarity_test(graph)
 
 

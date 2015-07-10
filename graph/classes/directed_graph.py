@@ -221,3 +221,21 @@ class DirectedGraph(object):
 
         # Alter the vertices
         edge['vertices'] = (edge['vertices'][0], node_a)
+
+    def get_edge_ids_by_node_ids(self, node_a, node_b):
+        """Returns a list of edge ids connecting node_a to node_b."""
+        # Check if the nodes are adjacent
+        if not self.adjacent(node_a, node_b):
+            return []
+
+        # They're adjacent, so pull the list of edges from node_a and determine which ones point to node_b
+        node = self.get_node(node_a)
+        return [edge_id for edge_id in node['edges'] if self.get_edge(edge_id)['vertices'][1] == node_b]
+
+    def get_first_edge_id_by_node_ids(self, node_a, node_b):
+        """Returns the first (and possibly only) edge connecting node_a and node_b."""
+        ret = self.get_edge_ids_by_node_ids(node_a, node_b)
+        if not ret:
+            return None
+        else:
+            return ret[0]
