@@ -3,6 +3,7 @@ Implementing planarity testing as per "The Hopcroft-Tarjan Planarity Algorithm" 
 Location: http://www.combinatorialmath.ca/G&G/articles/planarity.pdf
 """
 
+from collections import deque
 
 from ..searching.depth_first_search import depth_first_search_with_parent_data
 
@@ -24,18 +25,25 @@ def kocay_planarity_test(graph):
 
     adj = __calculate_adjacency_lists(graph)
     dfs_data = __get_dfs_data(graph)
-    __low_point_dfs(graph, dfs_data)
-    edge_weights = __calculate_edge_weights(graph, dfs_data)
-    adj = __sort_adjacency_lists(graph, adj, edge_weights, dfs_data['edge_lookup'])
+
+    dfs_data['graph'] = graph
+
+    L1, L2 = __low_point_dfs(dfs_data)
+    #dfs_data['lowpoint_1_lookup'] = L1
+    #dfs_data['lowpoint_2_lookup'] = L2
+
+    #edge_weights = __calculate_edge_weights(dfs_data)
+    #dfs_data['edge_weights'] = edge_weights
+
+    #new_adj = __sort_adjacency_lists(adj, dfs_data)
 
     return False
 
 
-def __low_point_dfs(graph, dfs_data):
+def __low_point_dfs(dfs_data):
     """Calculates the L1 and L2 for each vertex."""
-    L1, L2 = __get_all_lowpoints(graph, dfs_data)
-    dfs_data['lowpoint_1_lookup'] = L1
-    dfs_data['lowpoint_2_lookup'] = L2
+    L1, L2 = __get_all_lowpoints(dfs_data)
+    return (L1, L2)
 
 
 def __calculate_adjacency_lists(graph):
@@ -48,19 +56,24 @@ def __calculate_adjacency_lists(graph):
     return adj
 
 
-def __calculate_edge_weights(graph, dfs_data):
+def __calculate_edge_weights(dfs_data):
     """Calculates the weight of each edge, for embedding-order sorting."""
+    graph = dfs_data['graph']
+
     weights = {}
     for edge_id in graph.get_all_edge_id():
-        edge_weight = __edge_weight(edge_id, graph, dfs_data)
+        edge_weight = __edge_weight(edge_id, dfs_data)
         weights[edge_id] = edge_weight
 
     return weights
 
 
-def __sort_adjacency_lists(graph, adjacency_lists, edge_weights, edge_lookup):
+def __sort_adjacency_lists(adjacency_lists, dfs_data):
     """Sorts the adjacency list representation by the edge weights."""
     new_adjacency_lists = {}
+
+    edge_weights = dfs_data['edge_weights']
+    edge_lookup = dfs_data['edge_lookup']
 
     def weight_lookup_fn(n):
         return node_weight_lookup[n]
@@ -71,7 +84,7 @@ def __sort_adjacency_lists(graph, adjacency_lists, edge_weights, edge_lookup):
         node_weight_lookup = {}
         frond_lookup = {}
         for node_b in adj_list:
-            edge_id = graph.get_first_edge_id_by_node_ids(node_id, node_b)
+            edge_id = dfs_data['graph'].get_first_edge_id_by_node_ids(node_id, node_b)
             node_weight_lookup[node_b] = edge_weights[edge_id]
             frond_lookup[node_b] = 1 if edge_lookup[edge_id] == 'backedge' else 2
 
@@ -135,26 +148,28 @@ def __get_dfs_data(graph):
     return dfs_data
 
 
-def __get_all_lowpoints(graph, dfs_data):
+def __get_all_lowpoints(dfs_data):
     """Calculates the lowpoints for each node in a graph."""
     lowpoint_1_lookup = {}
     lowpoint_2_lookup = {}
 
     ordering = dfs_data['ordering']
-    ordering_lookup = dfs_data['ordering_lookup']
-    children_lookup = dfs_data['children_lookup']
 
     for node in ordering:
-        low_1, low_2 = __get_lowpoints(node, graph, ordering_lookup, children_lookup)
+        low_1, low_2 = __get_lowpoints(node, dfs_data)
         lowpoint_1_lookup[node] = low_1
         lowpoint_2_lookup[node] = low_2
 
     return lowpoint_1_lookup, lowpoint_2_lookup
 
 
-def __get_lowpoints(node, graph, ordering_lookup, children_lookup):
+def __get_lowpoints(node, dfs_data):
     """Calculates the lowpoints for a single node in a graph."""
-    t_u = __descendant_neighbors(node, graph, children_lookup)
+
+    ordering_lookup = dfs_data['ordering_lookup']
+
+    #t_u = __descendant_neighbors(node, dfs_data)
+    t_u = T(node, dfs_data)
     sorted_t_u = sorted(t_u, key=lambda a: ordering_lookup[a])
     lowpoint_1 = sorted_t_u[0]
     lowpoint_2 = sorted_t_u[1]
@@ -162,44 +177,54 @@ def __get_lowpoints(node, graph, ordering_lookup, children_lookup):
     return lowpoint_1, lowpoint_2
 
 
-def __descendant_neighbors(node, graph, children_lookup):
+def __descendant_neighbors(node, dfs_data):
     """Calculates all the neighbors of a list of descendants."""
-    list_of_descendants = __get_descendants(node, children_lookup)
+    list_of_descendants = S(node, dfs_data)
 
     neighbors_set = set()
 
     for d in list_of_descendants:
-        nodes = graph.neighbors(d)
+        nodes = A(d, dfs_data)
         for n in nodes:
             neighbors_set.add(n)
 
     return list(neighbors_set)
 
 
-def __get_descendants(node, children_lookup):
+def __get_descendants(node, dfs_data):
     """Gets the descendants of a node."""
     list_of_descendants = []
 
     stack = deque()
 
+    children_lookup = dfs_data['children_lookup']
+
     current_node = node
     children = children_lookup[current_node]
+    dfs_current_node = D(current_node, dfs_data)
     for n in children:
-        stack.append(n)
+        dfs_child = D(n, dfs_data)
+        # Validate that the child node is actually a descendant and not an ancestor
+        if dfs_child > dfs_current_node:
+            stack.append(n)
 
     while len(stack) > 0:
         current_node = stack.pop()
         list_of_descendants.append(current_node)
         children = children_lookup[current_node]
+        dfs_current_node = D(current_node, dfs_data)
         for n in children:
-            stack.append(n)
+            dfs_child = D(n, dfs_data)
+            # Validate that the child node is actually a descendant and not an ancestor
+            if dfs_child > dfs_current_node:
+                stack.append(n)
 
     return list_of_descendants
 
 
-def __edge_weight(edge_id, graph, dfs_data):
+def __edge_weight(edge_id, dfs_data):
     """Calculates the edge weight used to sort edges."""
-
+    graph = dfs_data['graph']
     edge_lookup = dfs_data['edge_lookup']
 
     edge = graph.get_edge(edge_id)
@@ -239,6 +264,10 @@ def is_type_II_branch(u, v, dfs_data):
 
 # Wrapper functions -- used to keep the syntax roughly the same as that used in the paper
 
+def A(u, dfs_data):
+    """The adjacency function."""
+    return dfs_data['graph'].neighbors(u)
+
 def a(v, dfs_data):
     """The ancestor function."""
     return dfs_data['parent_lookup'][v]
@@ -246,6 +275,21 @@ def a(v, dfs_data):
 def D(u, dfs_data):
     """The DFS-numbering function."""
     return dfs_data['ordering_lookup'][u]
+
+def S(u, dfs_data):
+    """The set of all descendants of u."""
+    return __get_descendants(u, dfs_data)
+
+def S_star(u, dfs_data):
+    """The set of all descendants of u, with u added."""
+    s_u = S(u, dfs_data)
+    if u not in s_u:
+        s_u.append(u)
+    return s_u
+
+def T(u, dfs_data):
+    """T(u) consists of all vertices adjacent to u or any descendant of u."""
+    return list(set([w for v in S_star(u, dfs_data) for w in A(v, dfs_data)]))
 
 def L1(v, dfs_data):
     """The L1 lowpoint of the node."""
@@ -255,10 +299,10 @@ def L2(v, dfs_data):
     """The L2 lowpoint of the node."""
     return dfs_data['lowpoint_2_lookup'][v]
 
-def wt(u, v, graph, edge_weights):
+def wt(u, v, dfs_data):
     """The wt_u[v] function used in the paper."""
     # Determine the edge_id
-    edge_id = graph.get_first_edge_id_by_node_ids(u, v)
+    edge_id = dfs_data['graph'].get_first_edge_id_by_node_ids(u, v)
     # Pull the weight of that edge
-    return edge_weights[edge_id]
+    return dfs_data['edge_weights'][edge_id]
 
