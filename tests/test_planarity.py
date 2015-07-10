@@ -63,6 +63,33 @@ class IsPlanarTest(unittest.TestCase):
 
         self.assertEqual(expected, planarity)
 
+    def test_tiny_ring_graph_is_planar(self):
+        """Does the ''is_planar'' function correctly classify a tiny ring graph as planar?"""
+        graph = utility_functions.build_ring_graph(4)
+
+        expected = True
+        planarity = is_planar(graph)
+
+        self.assertEqual(expected, planarity)
+
+    def test_small_ring_graph_is_planar(self):
+        """Does the ''is_planar'' function correctly classify a small ring graph as planar?"""
+        graph = utility_functions.build_ring_graph(10)
+
+        expected = True
+        planarity = is_planar(graph)
+
+        self.assertEqual(expected, planarity)
+
+    def test_large_ring_graph_is_planar(self):
+        """Does the ''is_planar'' function correctly classify a large ring graph as planar?"""
+        graph = utility_functions.build_ring_graph(100)
+
+        expected = True
+        planarity = is_planar(graph)
+
+        self.assertEqual(expected, planarity)
+
     def test_k5_graph_not_planar(self):
         """Does the ''is_planar'' function correctly classify the K5 graph as non-planar?"""
         graph = build_k5_graph()
