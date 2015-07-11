@@ -33,10 +33,14 @@ def kocay_planarity_test(graph):
     dfs_data = __setup_dfs_data(graph, adj)
 
     # We now have the information we need to calculate the branch points
-    b_u_lookup =__calculate_bu_dfs(dfs_data)
-    dfs_data['b_u_lookup'] = b_u_lookup
+    __branch_point_dfs(dfs_data)
+    #b_u_lookup =__calculate_bu_dfs(dfs_data)
+    #dfs_data['b_u_lookup'] = b_u_lookup
 
-    return False
+    # Now that everything is calculated and ordered, we can attempt to embed the graph
+    is_planar = __embed_branch(dfs_data)
+
+    return is_planar
 
 def __setup_dfs_data(graph, adj):
     """Sets up the dfs_data object, for consistency."""
@@ -170,34 +174,383 @@ def __branch_point_dfs_recursive(u, large_n, b, stem, dfs_data):
 
 
 def __embed_branch(dfs_data):
-    """Builds the combinatorial embedding of the graph."""
+    """Builds the combinatorial embedding of the graph. Returns whether the graph is planar."""
     u = dfs_data['ordering'][0]
     nonplanar = True
-    LF = deque()
-    RF = deque()
-    __embed_branch_recursive(u, nonplanar, LF, RF, dfs_data)
+    dfs_data['LF'] = []
+    dfs_data['RF'] = []
+    dfs_data['FG'] = {}
+    n = dfs_data['graph'].num_nodes()
+    f0 = (0, n)
+    g0 = (0, n)
+    L0 = {'u': 0, 'v': n}
+    R0 = {'x': 0, 'y': n}
+    dfs_data['LF'].append(f0)
+    dfs_data['RF'].append(g0)
+    dfs_data['FG'][0] = [L0, R0]
+    dfs_data['FG']['m'] = 0
+    dfs_data['FG']['l'] = 0
+    dfs_data['FG']['r'] = 0
+
+    __embed_branch_recursive(u, nonplanar, dfs_data)
+
+    return not nonplanar
 
 
-def __embed_branch_recursive(u, nonplanar, LF, RF, dfs_data):
-    """A recursive implementation of the EmbedBranch function, as defined on page 8 of the paper."""
+def __embed_branch_recursive(u, nonplanar, dfs_data):
+    """A recursive implementation of the EmbedBranch function, as defined on pages 8 and 22 of the paper."""
     for v in dfs_data['adj'][u]:
         nonplanar = True
         if a(v, dfs_data) == u:
             if b(v, dfs_data) == u:
-                if not __can_embed(v, LF, RF, dfs_data):
+                successful = __insert_branch(u, v, dfs_data)
+                if not successful:
                     return
-                buv = B(u, v, dfs_data)
-                __insert_buv(buv, LF, RF, dfs_data)
-            __embed_branch_recursive(v, nonplanar, LF, RF, dfs_data)
+            __embed_branch_recursive(v, nonplanar, dfs_data)
             if nonplanar:
                 return
-        elif is_frond(v, u, dfs_data):
-            successful = __embed_frond(u, v, LF, RF, dfs_data)
+        elif is_frond(u, v, dfs_data):
+            successful = __embed_frond(u, v, dfs_data)
             if not successful:
                 return
     nonplanar = False
     return
 
+
+def __insert_branch(u, v, dfs_data):
+    """Embeds a branch Bu(v) (as described on page 22 of the paper). Returns whether the embedding was successful."""
+    w = L1(v, dfs_data)
+    d_u = D(node_u, dfs_data)
+    d_w = D(node_w, dfs_data)
+
+    # Embed uw
+    successful = __embed_frond(u, w, dfs_data)
+    if not successful:
+        return False
+
+    # Embed a branch marker uu on the side opposite to uw, in the same frond block
+    __embed_frond(u, u, dfs_data)
+
+    # Determine which side uw was embedded on
+    embedded_frond = (d_w, d_u)
+    false_frond = (-d_w, d_u)
+    embedded_marker = (d_u, d_u)
+    false_marker = (-d_u, d_u)
+
+    #print "Insert Branch:", false_frond, false_marker
+
+    if dfs_data['LF'][-1] == embedded_frond:
+        # It was embedded on the left side
+        # Mark uw as a false frond
+        #print "uw embedded left:", dfs_data['LF'][-1], dfs_data['RF'][-1]
+        dfs_data['LF'][-1] = false_frond
+        dfs_data['RF'][-1] = false_marker
+    else:
+        #print "uw embedded right:", dfs_data['LF'][-1], dfs_data['RF'][-1]
+        dfs_data['RF'][-1] = false_frond
+        dfs_data['LF'][-1] = false_marker
+
+    return True
+
+
+def __embed_frond(node_u, node_w, dfs_data):
+    """Embeds a frond uw into either LF or RF. Returns whether the embedding was successful."""
+    d_u = D(node_u, dfs_data)
+    d_w = D(node_w, dfs_data)
+
+    LF = dfs_data['LF']
+    m = dfs_data['FG']['m']
+    l_w = lw(dfs_data)
+    r_w = rw(dfs_data)
+    u_m = u(m, dfs_data)
+    x_m = x(m, dfs_data)
+
+    # There are multiple cases for both u and w
+    # --Detect the case for u and store it for handling once the case for w is determined
+    case_1 = False
+    case_2 = False
+    case_3 = False
+
+    if d_u > u_m and d_u > x_m:
+        case_1 = True
+    elif d_u <= u_m and d_u > x_m:
+        case_2 = True
+    elif d_u > u_m and d_u <= x_m:
+        case_3 = True
+    else:
+        # We should never get here, return false because there's no way we can embed this frond
+        return False
+
+    # --Detect the case for w and process the edge appropriately
+    if d_w >= l_w and d_w >= r_w:
+        # Case 4
+        # --We do the same thing for all three u-cases: Add the frond to the left side
+        LF.append( (d_w, d_u) )
+
+        dfs_data['FG']['m'] += 1
+        dfs_data['FG']['l'] += 1
+        m = dfs_data['FG']['m']
+
+        Lm = {'u': d_w, 'v': d_u}
+        Rm = {'x': 0, 'y': n}
+        dfs_data['FG'][m] = [Lm, Rm]
+        return True
+    elif d_w >= l_w and d_w < r_w:
+        # Case 5
+        return __do_case_5_work(d_w, d_u, case_1, case_2, case_3, dfs_data)
+    elif d_w < l_w and d_w >= r_w:
+        # Case 6
+        return __do_case_6_work(d_w, d_u, case_1, case_2, case_3, dfs_data)
+    elif d_w < l_w and d_w < r_w:
+        # Case 7
+        while d_w < l_w and d_w < r_w:
+            if d_u > u_m and d_u > x_m:
+                return False
+            switch_sides(d_u, dfs_data)
+            l_w = lw(dfs_data)
+            r_w = rw(dfs_data)
+            m = dfs_data['FG']['m']
+            u_m = u(m, dfs_data)
+            x_m = x(m, dfs_data)
+
+        case_1 = False
+        case_2 = False
+        case_3 = False
+        if d_u <= u_m and d_u > x_m:
+            case_2 = True
+        elif d_u > u_m and d_u <= x_m:
+            case_3 = True
+
+        if d_w >= l_w and d_w < r_w:
+            # Case 5 redux
+            return __do_case_5_work(d_w, d_u, case_1, case_2, case_3, dfs_data)
+        if d_w < l_w and d_w >= r_w:
+            # Case 6 redux
+            return __do_case_6_work(d_w, d_u, case_1, case_2, case_3, dfs_data)
+    else:
+        # We should never get here, return false because there's no way we can embed this frond
+        return False
+
+    # We really shouldn't get to this point, but this is a catch-all just in case
+    return False
+
+
+def __do_case_5_work(d_w, d_u, case_1, case_2, case_3, dfs_data):
+    """Encapsulates the work that will be done for case 5 of __embed_frond,
+    since it gets used in more than one place."""
+    # --We should only ever see u-cases 1 and 2
+    if case_3:
+        # --We should never get here
+        return False
+
+    # --Add the frond to the left side
+    dfs_data['LF'].append( (d_w, d_u) )
+    dfs_data['FG']['l'] += 1
+    # --Add uw to Lm
+    Lm = L(m, dfs_data)
+    if d_w < Lm['u']:
+        Lm['u'] = d_w
+    if d_u > Lm['v']:
+        Lm['v'] = d_u
+
+    # --Case 2 requires a bit of extra work
+    if case_2:
+        Lm['u'] = d_w
+        x_m1 = x(m-1, dfs_data)
+        while d_w < x_m1:
+            merge_Fm(dfs_data)
+            m = dfs_data['FG']['m']
+            x_m1 = x(m-1, dfs_data)
+
+    return True
+
+
+def __do_case_6_work(d_w, d_u, case_1, case_2, case_3, dfs_data):
+    """Encapsulates the work that will be done for case 6 of __embed_frond,
+    since it gets used in more than one place."""
+    # --We should only ever see u-cases 1 and 3
+    if case_2:
+        # --We should never get here
+        return False
+
+    # --Add the frond to the right side
+    dfs_data['RF'].append( (d_w, d_u) )
+    dfs_data['FG']['r'] += 1
+    # --Add uw to Rm
+    Rm = R(m, dfs_data)
+    if d_w < Rm['x']:
+        Rm['x'] = d_w
+    if d_u > Rm['y']:
+        Rm['y'] = d_u
+
+    # --Case 3 requires a bit of extra work
+    if case_3:
+        Rm['x'] = d_w
+        u_m1 = u(m-1, dfs_data)
+        while d_w < u_m1:
+            merge_Fm(dfs_data)
+            m = dfs_data['FG']['m']
+            u_m1 = u(m-1, dfs_data)
+    return True
+
+
+def merge_Fm(dfs_data):
+    """Merges Fm-1 and Fm, as defined on page 19 of the paper."""
+    FG = dfs_data['FG']
+    m = FG['m']
+    FGm = FG[m]
+    FGm1 = FG[m-1]
+
+    if FGm[0]['u'] < FGm1[0]['u']:
+        FGm1[0]['u'] = FGm[0]['u']
+
+    if FGm[0]['v'] > FGm1[0]['v']:
+        FGm1[0]['v'] = FGm[0]['v']
+
+    if FGm[1]['x'] < FGm1[1]['x']:
+        FGm1[1]['x'] = FGm[1]['x']
+
+    if FGm[1]['y'] > FGm1[1]['y']:
+        FGm1[1]['y'] = FGm[1]['y']
+
+    del FG[m]
+    FG['m'] -= 1
+
+
+def switch_sides(d_u, dfs_data):
+    """Switches Lm and Rm, as defined on page 20 of the paper."""
+    m = dfs_data['FG']['m']
+    u_m = u(m, dfs_data)
+
+    if d_u <= u_m:
+        l_w = lw(dfs_data)
+        u_m1 = u(m-1, dfs_data)
+        while u_m1 > l_w:
+            merge_Fm(dfs_data)
+            m = dfs_data['FG']['m']
+            u_m1 = u(m-1, dfs_data)
+
+        # l_w = r_w is handled dynamically by the switching of fronds below
+
+        # l = r
+        dfs_data['FG']['l'] = dfs_data['FG']['r']
+
+        # adjust r so that gr is first frond preceding xm in RF
+        x_m = x(m, dfs_data)
+        r = len(dfs_data['RF']) - 1
+        g_r = dfs_data['RF'][r][0]
+        while g_r >= x_m:
+            r -= 1
+            g_r = dfs_data['RF'][r][0]
+        dfs_data['FG']['r'] = r
+
+        # changing r_w is also handled dynamically by the frond switching
+    else:
+        r_w = rw(dfs_data)
+        x_m1 = x(m-1, dfs_data)
+        while x_m1 > r_w:
+            merge_Fm(dfs_data)
+            m = dfs_data['FG']['m']
+            x_m1 = x(m-1, dfs_data)
+
+        # r_w = l_w is handled dynamically by the switching of fronds below
+
+        # r = l
+        dfs_data['FG']['r'] = dfs_data['FG']['l']
+
+        # adjust l so that fl is first frond preceding um in LF
+        u_m = u(m, dfs_data)
+        l = len(dfs_data['LF']) - 1
+        f_l = dfs_data['LF'][r][0]
+        while f_l >= u_m:
+            l -= 1
+            f_l = dfs_data['LF'][l][0]
+        dfs_data['FG']['l'] = l
+
+        # changing l_w is also handled dynamically by the frond switching
+
+    m = dfs_data['FG']['m']
+
+    # Exchange the portion of the linked list LF between um and vm with the portion of RF between xm and ym
+    LF = dfs_data['LF']
+    RF = dfs_data['RF']
+
+    u_m = u(m, dfs_data)
+    v_m = v(m, dfs_data)
+    x_m = x(m, dfs_data)
+    y_m = y(m, dfs_data)
+
+    # --These are the baseline indexes, they should be narrowed appropriately
+    first_left_index = 1
+    last_left_index = len(LF) - 1
+    first_right_index = 1
+    last_right_index = len(RF) - 1
+
+    # --Narrow the left indexes
+    while first_left_index < last_left_index:
+        frond = LF[first_left_index]
+        if u_m >= frond[0]:
+            first_left_index -= 1
+            break
+        else:
+            first_left_index += 1
+
+    while first_left_index < last_left_index:
+        frond = LF[last_left_index]
+        if v_m < frond[1]:
+            last_left_index -= 1
+        else:
+            last_left_index += 1
+            break
+
+    # --Narrow the right indexes
+    while first_right_index < last_right_index:
+        frond = RF[first_right_index]
+        if x_m >= frond[0]:
+            first_right_index -= 1
+            break
+        else:
+            first_right_index += 1
+
+    while first_right_index < last_right_index:
+        frond = RF[last_right_index]
+        if y_m < frond[1]:
+            last_right_index -= 1
+        else:
+            last_right_index += 1
+            break
+
+
+    # --Grab the appropriate list slices from each list
+    LF_slice = LF[first_left_index:last_left_index+1]
+    RF_slice = RF[first_right_index:last_right_index+1]
+
+    # --Remove the slices from each list
+    del LF[first_left_index:last_left_index+1]
+    del RF[first_right_index:last_right_index+1]
+
+    # --Add the slice from the right list to the left list
+    i = first_left_index
+    for x in RF_slice:
+        LF.insert(i, x)
+        i += 1
+
+    # --Add the slice from the left list to the right list
+    i = first_right_index
+    for x in LF_slice:
+        RF.insert(i, x)
+        i += 1
+
+    # Descriptive Note: We can just switch the slices directly because we know that if there were any conflicts from
+    # the switch, those fronds would also have been included in the switch.
+
+    # Exchange um and xm , vm and ym , Lm and Rm
+    # --Only Lm and Rm need to be exchanged, since um, xm, vm, and ym are all dynamically calculated
+    old_rm = dfs_data['FG'][m][1]
+    dfs_data['FG'][m][1] = dfs_data['FG'][m][0]
+    dfs_data['FG'][m][0] = old_rm
+
+    merge_Fm(dfs_data)
 
 
 # Helper functions -- these are not directly specified by the overall algorithm, they just calculate intermediate data
@@ -382,6 +735,16 @@ def __get_descendants(node, dfs_data):
     return list_of_descendants
 
 
+def __top_frond_left(dfs_data):
+    """Returns the frond at the top of the LF stack."""
+    return dfs_data['LF'][-1]
+
+
+def __top_frond_right(dfs_data):
+    """Returns the frond at the top of the RF stack."""
+    return dfs_data['RF'][-1]
+
+
 # Wrapper functions -- used to keep the syntax roughly the same as that used in the paper
 
 def A(u, dfs_data):
@@ -455,7 +818,7 @@ def wt(u, v, dfs_data):
     return dfs_data['edge_weights'][edge_id]
 
 
-def L(dfs_data):
+def _L(dfs_data):
     """L(T) contains leaves and branch points for the DFS-tree T."""
     """L(T) = {v | the first w in Adj[v] corresponds to a frond vw}."""
     node_set = set()
@@ -479,3 +842,50 @@ def N(u, dfs_data):
 def N_prime(u, dfs_data):
     """The N'(u) function used in the paper."""
     return dfs_data['N_prime_u_lookup'][u]
+
+
+def F(i, dfs_data):
+    """The block of fronds in the frond graph."""
+    return dfs_data['FG'][i]
+
+
+def L(i, dfs_data):
+    """The set of fronds on the left side of the frond graph."""
+    return F(i, dfs_data)[0]
+
+
+def R(i, dfs_data):
+    """The set of fronds on the right side of the frond graph."""
+    return F(i, dfs_data)[1]
+
+
+def u(i, dfs_data):
+    """The minimum vertex (DFS-number) in a frond contained in Li."""
+    return L(i, dfs_data)['u']
+
+
+def v(i, dfs_data):
+    """The maximum vertex (DFS-number) in a frond contained in Li."""
+    return L(i, dfs_data)['v']
+
+
+def x(i, dfs_data):
+    """The minimum vertex (DFS-number) in a frond contained in Ri."""
+    return R(i, dfs_data)['x']
+
+
+def y(i, dfs_data):
+    """The maximum vertex (DFS-number) in a frond contained in Ri."""
+    return R(i, dfs_data)['y']
+
+
+def lw(dfs_data):
+    """The minimum frond endpoint that can be embedded on the left side of the current frond block."""
+    l = dfs_data['FG']['l']
+    return dfs_data['LF'][l][0]
+
+
+def rw(dfs_data):
+    """The minimum frond endpoint that can be embedded on the right side of the current frond block."""
+    r = dfs_data['FG']['r']
+    return dfs_data['RF'][r][0]
