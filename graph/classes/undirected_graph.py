@@ -78,3 +78,14 @@ class UndirectedGraph(DirectedGraph):
 
         # Alter the vertices on the edge
         edge['vertices'] = (edge['vertices'][0], node_a)
+
+    def get_edge_ids_by_node_ids(self, node_a, node_b):
+        """Returns a list of edge ids connecting node_a to node_b."""
+        # Check if the nodes are adjacent
+        if not self.adjacent(node_a, node_b):
+            return []
+
+        # They're adjacent, so pull the list of edges from node_a and determine which ones point to node_b
+        node = self.get_node(node_a)
+        return [edge_id for edge_id in node['edges'] \
+                if (self.get_edge(edge_id)['vertices'][1] == node_b or self.get_edge(edge_id)['vertices'][0] == node_b)]
