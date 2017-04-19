@@ -6,7 +6,7 @@ setup(
     version='0.1.0',
     description="A graph manipulation library in pure Python",
     license="MIT",
-    packages=["graph"],
+    packages=["graph", "graph.classes", "graph.functions", "graph.helpers"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
