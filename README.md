@@ -12,10 +12,10 @@ Graph Types Supported:
 Common Algorithms Supported:
 * DFS
 * BFS
+* Minimum Spanning Tree
 * Connected Components
 * Biconnected Components
 * Articulation Vertices
-* Minimum Spanning Tree
 
 Advanced algorithms supported will include:
 * Triconnected Components
@@ -24,3 +24,31 @@ Advanced algorithms supported will include:
 * Planarity Testing
 * Fully Dynamic Planarity Testing
 * Planar Embedding
+
+## Current Algorithm Support
+Algorithm | Status
+--------- | ------
+DFS | :white_check_mark: Supported
+BFS | :white_check_mark: Supported
+MST | :white_check_mark: Supported
+Connected Components | :white_check_mark: Supported
+Biconnected Components | :white_check_mark: Supported
+Triconnected Components | :x: Unsupported
+Articulation Vertices | :white_check_mark: Supported
+Separation Pairs | :x: Unsupported
+L-T Separator Theorem | :x: Unsupported
+Planarity Testing | :x: Unsupported
+Planar Embedding | :x: Unsupported
+Fully-Dynamic Planarity Testing | :x: Unsupported
+
+
+## Running the Test Suite
+The entire test suite is written using the standard library unittest module, so you should be able to run it with whichever framework you most prefer. We recommend [nose](http://nose.readthedocs.io/).
+
+With nose installed, navigate to the root of the project and run `nosetests`. It should recognize the `tests` subdirectory and run through the entire test suite.
+
+All algorithm implementations should have test cases written and passing.
+
+
+## Contributions
+Contributions are more than welcome! Algorithm suggestions, implementations, or even additional tests for existing algorithms are all great ways to contribute. Not a coder? That's fine too! This project is in dire need of documentation and examples.
