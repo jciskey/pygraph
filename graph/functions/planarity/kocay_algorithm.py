@@ -624,10 +624,26 @@ def switch_sides(d_u, dfs_data):
     # Exchange um and xm , vm and ym , Lm and Rm
     # --Only Lm and Rm need to be exchanged, since um, xm, vm, and ym are all dynamically calculated
     old_rm = dfs_data['FG'][m][1]
-    dfs_data['FG'][m][1] = dfs_data['FG'][m][0]
-    dfs_data['FG'][m][0] = old_rm
+    old_lm = dfs_data['FG'][m][0]
+
+    # --We have to convert the Lm and Rm dicts to use the correct keys
+    converted_rm = __convert_RF_dict_to_LF(old_rm)
+    converted_lm = __convert_LF_dict_to_RF(old_lm)
+
+    dfs_data['FG'][m][1] = converted_lm
+    dfs_data['FG'][m][0] = converted_rm
 
     merge_Fm(dfs_data)
+
+def __convert_RF_dict_to_LF(x):
+    """Converts a right-side encoded frond dict into a left-side encoded frond dict. x -> u, y -> v"""
+    new_x = {'u': x['x'], 'v': x['y']}
+    return new_x
+
+def __convert_LF_dict_to_RF(x):
+    """Converts a left-side encoded frond dict into a right-side encoded frond dict. u -> x, v -> y"""
+    new_x = {'x': x['u'], 'y': x['v']}
+    return new_x
 
 
 def __check_left_side_conflict(x, y, dfs_data):
