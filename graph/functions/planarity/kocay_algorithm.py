@@ -10,7 +10,7 @@ from ..searching.depth_first_search import depth_first_search_with_parent_data
 
 """
 In programming the Hopcroft-Tarjan algorithm one first begins with
-the LowPtDFS in order to determine L1(v) and L2 (v). The adjacency lists
+the LowPtDFS in order to determine L1(v) and L2(v). The adjacency lists
 are then sorted by weight. Next, the BranchPtDFS can be executed in
 order to establish the first node in Adj[u]. Then EmbedBranch is executed
 in order to construct the lists LF and RF which determine the combina-
