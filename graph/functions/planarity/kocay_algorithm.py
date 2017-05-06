@@ -290,7 +290,7 @@ def __embed_frond(node_u, node_w, dfs_data, as_branch_marker=False):
     l_w = lw(dfs_data)
     r_w = rw(dfs_data)
     u_m = u(m, dfs_data)
-    x_m = x(m, dfs_data)
+    x_m = fn_x(m, dfs_data)
 
     # There are multiple cases for both u and w
     # --Detect the case for u and store it for handling once the case for w is determined
@@ -348,7 +348,7 @@ def __embed_frond(node_u, node_w, dfs_data, as_branch_marker=False):
             r_w = rw(dfs_data)
             m = dfs_data['FG']['m']
             u_m = u(m, dfs_data)
-            x_m = x(m, dfs_data)
+            x_m = fn_x(m, dfs_data)
 
         case_1 = False
         case_2 = False
@@ -399,11 +399,11 @@ def __do_case_5_work(d_w, d_u, case_1, case_2, case_3, dfs_data):
     # --Case 2 requires a bit of extra work
     if case_2:
         Lm['u'] = d_w
-        x_m1 = x(m-1, dfs_data)
+        x_m1 = fn_x(m-1, dfs_data)
         while d_w < x_m1:
             merge_Fm(dfs_data)
             m = dfs_data['FG']['m']
-            x_m1 = x(m-1, dfs_data)
+            x_m1 = fn_x(m-1, dfs_data)
         # --Now that the merges are done, we need to recheck for conflicts
         '''
         conflict = __check_left_side_conflict(d_w, d_u, dfs_data)
@@ -490,11 +490,11 @@ def merge_Fm(dfs_data):
 
 def switch_sides(d_u, dfs_data):
     """Switches Lm and Rm, as defined on page 20 of the paper."""
-    # global x
+    # global fn_x
 
     m = dfs_data['FG']['m']
     u_m = u(m, dfs_data)
-    # x_m = x(m, dfs_data)
+    # x_m = fn_x(m, dfs_data)
 
     if d_u <= u_m:
         l_w = lw(dfs_data)
@@ -510,7 +510,7 @@ def switch_sides(d_u, dfs_data):
         dfs_data['FG']['l'] = dfs_data['FG']['r']
 
         # adjust r so that gr is first frond preceding xm in RF
-        x_m = x(m, dfs_data)
+        x_m = fn_x(m, dfs_data)
         r = len(dfs_data['RF']) - 1
         g_r = dfs_data['RF'][r][0]
         while g_r >= x_m:
@@ -524,11 +524,11 @@ def switch_sides(d_u, dfs_data):
         # changing r_w is also handled dynamically by the frond switching
     else:
         r_w = rw(dfs_data)
-        x_m1 = x(m-1, dfs_data)
+        x_m1 = fn_x(m-1, dfs_data)
         while x_m1 > r_w:
             merge_Fm(dfs_data)
             m = dfs_data['FG']['m']
-            x_m1 = x(m-1, dfs_data)
+            x_m1 = fn_x(m-1, dfs_data)
 
         # r_w = l_w is handled dynamically by the switching of fronds below
 
@@ -554,7 +554,7 @@ def switch_sides(d_u, dfs_data):
 
     u_m = u(m, dfs_data)
     v_m = v(m, dfs_data)
-    x_m = x(m, dfs_data)
+    x_m = fn_x(m, dfs_data)
     y_m = y(m, dfs_data)
 
     # --These are the baseline indexes, they should be narrowed appropriately
@@ -1016,7 +1016,7 @@ def v(i, dfs_data):
     return L(i, dfs_data)['v']
 
 
-def x(i, dfs_data):
+def fn_x(i, dfs_data):
     """The minimum vertex (DFS-number) in a frond contained in Ri."""
     return R(i, dfs_data)['x']
 
