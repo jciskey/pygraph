@@ -54,6 +54,10 @@ def depth_first_search_with_parent_data(graph, root_node = None, adjacency_lists
                 # When adding the new nodes to the stack, we want to add them in reverse order so that
                 # the order the nodes are visited is the same as with a recursive DFS implementation
                 for n in neighbors[::-1]:
+                    if discovered[n]:
+                        # If the node already exists in the discovered nodes list
+                        # we don't want to re-add it to the stack
+                        continue
                     stack.appendleft(n)
                     parent_lookup[n] = u
                     children_lookup[u].append(n)
