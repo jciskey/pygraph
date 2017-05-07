@@ -196,6 +196,10 @@ def __embed_branch(dfs_data):
     dfs_data['FG']['l'] = 0
     dfs_data['FG']['r'] = 0
 
+    print 'DFS Ordering: {}'.format(dfs_data['ordering'])
+    for node in dfs_data['ordering']:
+        print '{}: {}'.format(node, dfs_data['adj'][node])
+
     nonplanar = __embed_branch_recursive(u, dfs_data)
 
     print "Nonplanar:", nonplanar
@@ -205,7 +209,17 @@ def __embed_branch(dfs_data):
 
 def __embed_branch_recursive(u, dfs_data):
     """A recursive implementation of the EmbedBranch function, as defined on pages 8 and 22 of the paper."""
+    print "\nu: {}\nadj: {}".format(u, dfs_data['adj'][u])
+
+    print 'Pre-inserts'
+    print "FG: {}".format(dfs_data['FG'])
+    print "LF: {}".format(dfs_data['LF'])
+    print "RF: {}".format(dfs_data['RF'])
+
     for v in dfs_data['adj'][u]:
+        print "\nu, v: {}, {}".format(u, v)
+        print "dfs_u, dfs_v: {}, {}".format(D(u, dfs_data), D(v, dfs_data))
+        nonplanar = True
         if a(v, dfs_data) == u:
             print 'Ancestor block entered:', u, v
             if b(v, dfs_data) == u:
@@ -224,19 +238,24 @@ def __embed_branch_recursive(u, dfs_data):
                 print 'EmbedFrond({}, {}) Failed'.format(u, v)
                 nonplanar = True
                 return nonplanar
+
+            print 'Post EmbedFrond'
+            print "FG: {}".format(dfs_data['FG'])
+            print "LF: {}".format(dfs_data['LF'])
+            print "RF: {}".format(dfs_data['RF'])
         else:
+            # This block is totally valid, and there will be multiple cases when it gets hit.
+            # We only want to do things if an edge is a tree edge (parent to child along the spine of the DFS tree),
+            # or if it's a frond edge (an edge moving up the tree from lower along the spine).
+            # Every non-tree edge will eventually get handled by the frond edge code as we recurse up the spine.
             pass
-            #print 'Blank block entered:', u, v
-            """
-            d_u = D(u, dfs_data)
-            d_v = D(v, dfs_data)
-            edge_id = dfs_data['graph'].get_first_edge_id_by_node_ids(u, v)
-            print "Edge Data:", edge_id, dfs_data['edge_lookup'][edge_id]
-            print "D:", d_u, d_v
-            print "Parents:", dfs_data['parent_lookup'][u], dfs_data['parent_lookup'][v]
-            print "Ordering:", dfs_data['ordering'][:10]
-            # """
-    print "Should be planar"
+    print "{}: Should be planar".format(u)
+
+    print 'Post-inserts'
+    print "FG: {}".format(dfs_data['FG'])
+    print "LF: {}".format(dfs_data['LF'])
+    print "RF: {}".format(dfs_data['RF'])
+
     nonplanar = False
     return nonplanar
 
@@ -258,25 +277,6 @@ def __insert_branch(u, v, dfs_data):
     if not successful:
         return False
 
-    # Determine which side uw was embedded on
-    embedded_frond = (d_w, d_u)
-    false_frond = (-d_w, d_u)
-    embedded_marker = (d_u, d_u)
-    false_marker = (-d_u, d_u)
-
-    #print "Insert Branch:", false_frond, false_marker
-
-    if dfs_data['LF'][-1] == embedded_frond:
-        # It was embedded on the left side
-        # Mark uw as a false frond
-        #print "uw embedded left:", dfs_data['LF'][-1], dfs_data['RF'][-1]
-        dfs_data['LF'][-1] = false_frond
-        dfs_data['RF'][-1] = false_marker
-    else:
-        #print "uw embedded right:", dfs_data['LF'][-1], dfs_data['RF'][-1]
-        dfs_data['RF'][-1] = false_frond
-        dfs_data['LF'][-1] = false_marker
-
     return True
 
 
@@ -284,6 +284,16 @@ def __embed_frond(node_u, node_w, dfs_data, as_branch_marker=False):
     """Embeds a frond uw into either LF or RF. Returns whether the embedding was successful."""
     d_u = D(node_u, dfs_data)
     d_w = D(node_w, dfs_data)
+
+    comp_d_w = abs(d_w)
+    if as_branch_marker:
+        d_w *= -1
+        if dfs_data['last_inserted_side'] == 'LF':
+            __insert_frond_RF(d_w, d_u, dfs_data)
+        else:
+            # We default to inserting a branch marker on the left side, unless we know otherwise
+            __insert_frond_LF(d_w, d_u, dfs_data)
+        return True
 
     LF = dfs_data['LF']
     m = dfs_data['FG']['m']
@@ -306,37 +316,37 @@ def __embed_frond(node_u, node_w, dfs_data, as_branch_marker=False):
         case_3 = True
     else:
         # We should never get here, return false because there's no way we can embed this frond
-        print "Invalid u-case detected: d_u {}, u_m {}, x_m {}".format(d_u, u_m, x_m)
+        print "Invalid u-case detected: (d_u, u_m, x_m): ({}, {}, {})".format(d_u, u_m, x_m)
+        print "FG: {}".format(dfs_data['FG'])
+        print "LF: {}".format(dfs_data['LF'])
+        print "RF: {}".format(dfs_data['RF'])
         return False
 
-    if as_branch_marker:
-        d_w *= -1
-
     # --Detect the case for w and process the edge appropriately
-    if d_w >= l_w and d_w >= r_w:
+    if comp_d_w >= l_w and comp_d_w >= r_w:
         # Case 4
         print "w-case 4 reached"
         # --We do the same thing for all three u-cases: Add the frond to the left side
-        LF.append( (d_w, d_u) )
+        __insert_frond_LF(d_w, d_u, dfs_data)
 
         dfs_data['FG']['m'] += 1
-        dfs_data['FG']['l'] += 1
         m = dfs_data['FG']['m']
         n = dfs_data['graph'].num_nodes()
 
         Lm = {'u': d_w, 'v': d_u}
-        Rm = {'x': 0, 'y': n}
+        Rm = {'x': n, 'y': 0} # See page 17 for how we deal with Ri being empty
+        #Rm = {}
         dfs_data['FG'][m] = [Lm, Rm]
         return True
-    elif d_w >= l_w and d_w < r_w:
+    elif comp_d_w >= l_w and comp_d_w < r_w:
         # Case 5
         print "w-case 5 reached"
         return __do_case_5_work(d_w, d_u, case_1, case_2, case_3, dfs_data)
-    elif d_w < l_w and d_w >= r_w:
+    elif comp_d_w < l_w and comp_d_w >= r_w:
         # Case 6
         print "w-case 6 reached"
         return __do_case_6_work(d_w, d_u, case_1, case_2, case_3, dfs_data)
-    elif d_w < l_w and d_w < r_w:
+    elif comp_d_w < l_w and comp_d_w < r_w:
         # Case 7
         print "w-case 7 reached"
         print "FG: {}".format(dfs_data['FG'])
@@ -344,7 +354,7 @@ def __embed_frond(node_u, node_w, dfs_data, as_branch_marker=False):
         print "RF: {}".format(dfs_data['RF'])
         print "(d_w, l_w, r_w): ({}, {}, {})".format(d_w, l_w, r_w)
         print "(d_u, u_m, x_m, m): ({}, {}, {}, {})".format(d_u, u_m, x_m, m)
-        while d_w < l_w and d_w < r_w:
+        while comp_d_w < l_w and comp_d_w < r_w:
             if d_u > u_m and d_u > x_m:
                 print "Nonplanar case reached: u-case 1, w-case 7"
                 print "FG: {}".format(dfs_data['FG'])
@@ -370,11 +380,11 @@ def __embed_frond(node_u, node_w, dfs_data, as_branch_marker=False):
         elif d_u > u_m and d_u <= x_m:
             case_3 = True
 
-        if d_w >= l_w and d_w < r_w:
+        if comp_d_w >= l_w and comp_d_w < r_w:
             # Case 5 redux
             print "w-case 5 redux reached"
             return __do_case_5_work(d_w, d_u, case_1, case_2, case_3, dfs_data)
-        if d_w < l_w and d_w >= r_w:
+        if comp_d_w < l_w and comp_d_w >= r_w:
             # Case 6 redux
             print "w-case 6 redux reached"
             return __do_case_6_work(d_w, d_u, case_1, case_2, case_3, dfs_data)
@@ -396,23 +406,20 @@ def __do_case_5_work(d_w, d_u, case_1, case_2, case_3, dfs_data):
         # --We should never get here
         return False
 
+    comp_d_w = abs(d_w)
+
     #if case_1:
     # --Add the frond to the left side
-    dfs_data['LF'].append( (d_w, d_u) )
-    dfs_data['FG']['l'] += 1
+    __insert_frond_LF(d_w, d_u, dfs_data)
+
     m = dfs_data['FG']['m']
-    # --Add uw to Lm
     Lm = L(m, dfs_data)
-    if d_w < Lm['u']:
-        Lm['u'] = d_w
-    if d_u > Lm['v']:
-        Lm['v'] = d_u
 
     # --Case 2 requires a bit of extra work
     if case_2:
         Lm['u'] = d_w
         x_m1 = fn_x(m-1, dfs_data)
-        while d_w < x_m1:
+        while comp_d_w < x_m1:
             merge_Fm(dfs_data)
             m = dfs_data['FG']['m']
             x_m1 = fn_x(m-1, dfs_data)
@@ -441,40 +448,64 @@ def __do_case_6_work(d_w, d_u, case_1, case_2, case_3, dfs_data):
         # --We should never get here
         return False
 
+    comp_d_w = abs(d_w)
+
+    # --Add the frond to the right side
+    __insert_frond_RF(d_w, d_u, dfs_data)
+
+    m = dfs_data['FG']['m']
+    Rm = R(m, dfs_data)
+
+    # --Case 3 requires a bit of extra work
+    if case_3:
+        Rm['x'] = d_w
+        u_m1 = u(m-1, dfs_data)
+        while comp_d_w < u_m1:
+            merge_Fm(dfs_data)
+            m = dfs_data['FG']['m']
+            u_m1 = u(m-1, dfs_data)
+    #else:
+        #print "Case 6 work, u-case 1"
+
+    return True
+
+def __insert_frond_RF(d_w, d_u, dfs_data):
+    """Encapsulates the process of inserting a frond uw into the right side frond group."""
+    # d_w can come in as a negative value, if it was a false frond marker
+    # However, we want the non-negative value for comparison purposes
+    comp_d_w = abs(d_w)
+
     # --Add the frond to the right side
     dfs_data['RF'].append( (d_w, d_u) )
     dfs_data['FG']['r'] += 1
     m = dfs_data['FG']['m']
     # --Add uw to Rm
     Rm = R(m, dfs_data)
-    if d_w < Rm['x']:
+    if comp_d_w < Rm['x']:
         Rm['x'] = d_w
     if d_u > Rm['y']:
         Rm['y'] = d_u
 
-    # --Case 3 requires a bit of extra work
-    if case_3:
-        Rm['x'] = d_w
-        u_m1 = u(m-1, dfs_data)
-        while d_w < u_m1:
-            merge_Fm(dfs_data)
-            m = dfs_data['FG']['m']
-            u_m1 = u(m-1, dfs_data)
-        # --Now that the merges are done, we need to recheck for conflicts
-        '''
-        conflict = __check_left_side_conflict(d_w, d_u, dfs_data)
-        if conflict:
-            print "Case 6 work, u-case 3, left side conflict"
-            return False
-        conflict = __check_right_side_conflict(d_w, d_u, dfs_data)
-        if conflict:
-            print "Case 6 work, u-case 3, right side conflict"
-            return False
-        '''
-    else:
-        print "Case 6 work, u-case 1"
+    dfs_data['last_inserted_side'] = 'RF'
 
-    return True
+def __insert_frond_LF(d_w, d_u, dfs_data):
+    """Encapsulates the process of inserting a frond uw into the left side frond group."""
+    # d_w can come in as a negative value, if it was a false frond marker
+    # However, we want the non-negative value for comparison purposes
+    comp_d_w = abs(d_w)
+
+    # --Add the frond to the right side
+    dfs_data['LF'].append( (d_w, d_u) )
+    dfs_data['FG']['l'] += 1
+    m = dfs_data['FG']['m']
+    # --Add uw to Lm
+    Lm = L(m, dfs_data)
+    if comp_d_w < Lm['u']:
+        Lm['u'] = d_w
+    if d_u > Lm['v']:
+        Lm['v'] = d_u
+
+    dfs_data['last_inserted_side'] = 'LF'
 
 
 def merge_Fm(dfs_data):
@@ -1046,12 +1077,20 @@ def v(i, dfs_data):
 
 def fn_x(i, dfs_data):
     """The minimum vertex (DFS-number) in a frond contained in Ri."""
-    return R(i, dfs_data)['x']
+    try:
+        return R(i, dfs_data)['x']
+    except Exception, e:
+        # Page 17 states that if Ri is empty, then we take xi to be n
+        return dfs_data['graph'].num_nodes()
 
 
 def y(i, dfs_data):
     """The maximum vertex (DFS-number) in a frond contained in Ri."""
-    return R(i, dfs_data)['y']
+    try:
+        return R(i, dfs_data)['y']
+    except Exception, e:
+        # Page 17 states that if Ri is empty, then we take yi to be 0
+        return 0
 
 
 def lw(dfs_data):
