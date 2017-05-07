@@ -11,7 +11,7 @@ from .functions import (a_star_search,
                         find_minimum_spanning_tree, find_minimum_spanning_tree_as_subgraph,
                         find_minimum_spanning_forest, find_minimum_spanning_forest_as_subgraphs)
 
-from .helpers import (make_subgraph, merge_graphs)
+from .helpers import (make_subgraph, merge_graphs, create_graph_from_adjacency_matrix)
 
 # --For testing
 from .helpers import DisjointSet
