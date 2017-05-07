@@ -2,6 +2,22 @@
 
 from .classes import UndirectedGraph
 
+def build_cycle_graph(num_nodes):
+    """Builds a cycle graph with the specified number of nodes.
+       Ref: http://mathworld.wolfram.com/CycleGraph.html"""
+    graph = UndirectedGraph()
+
+    if num_nodes > 0:
+        first_node = graph.new_node()
+        if num_nodes > 1:
+            previous_node = first_node
+            for _ in xrange(num_nodes - 1):
+                new_node = graph.new_node()
+                graph.new_edge(previous_node, new_node)
+                previous_node = new_node
+            graph.new_edge(previous_node, first_node)
+
+    return graph
 
 def build_triangle_graph():
     """Builds a triangle graph, C3.
