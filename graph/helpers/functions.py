@@ -3,7 +3,7 @@ but end users won't care about."""
 
 import copy
 
-from ..classes import UndirectedGraph
+from ..classes import UndirectedGraph, DirectedGraph
 
 
 # Graph Conversions

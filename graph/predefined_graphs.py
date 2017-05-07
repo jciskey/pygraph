@@ -1,6 +1,7 @@
 """Provides factory methods for building well-known, predefined graphs."""
 
 from .classes import UndirectedGraph
+from .helpers import create_graph_from_adjacency_matrix
 
 def build_cycle_graph(num_nodes):
     """Builds a cycle graph with the specified number of nodes.
