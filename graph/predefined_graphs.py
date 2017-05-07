@@ -22,14 +22,7 @@ def build_cycle_graph(num_nodes):
 def build_triangle_graph():
     """Builds a triangle graph, C3.
        Ref: http://mathworld.wolfram.com/CycleGraph.html"""
-    graph = UndirectedGraph()
-
-    graph.new_node()
-    graph.new_node()
-    graph.new_node()
-    graph.new_edge(1, 2)
-    graph.new_edge(1, 3)
-    graph.new_edge(2, 3)
+    graph = build_cycle_graph(3)
 
     return graph
 
@@ -37,16 +30,7 @@ def build_triangle_graph():
 def build_square_graph():
     """Builds a square graph, C4.
        Ref: http://mathworld.wolfram.com/CycleGraph.html"""
-    graph = UndirectedGraph()
-
-    graph.new_node()
-    graph.new_node()
-    graph.new_node()
-    graph.new_node()
-    graph.new_edge(1, 2)
-    graph.new_edge(1, 4)
-    graph.new_edge(2, 3)
-    graph.new_edge(3, 4)
+    graph = build_cycle_graph(4)
 
     return graph
 
@@ -77,16 +61,7 @@ def build_tetrahedral_graph():
 def build_5_cycle_graph():
     """Builds a 5-cycle graph, C5.
        Ref: http://mathworld.wolfram.com/CycleGraph.html"""
-    graph = UndirectedGraph()
-
-    for _ in xrange(5):
-        graph.new_node()
-
-    graph.new_edge(1, 2)
-    graph.new_edge(2, 3)
-    graph.new_edge(3, 4)
-    graph.new_edge(4, 5)
-    graph.new_edge(5, 1)
+    graph = build_cycle_graph(5)
 
     return graph
 
