@@ -44,7 +44,7 @@ def kocay_planarity_test(graph):
 
 def __setup_dfs_data(graph, adj):
     """Sets up the dfs_data object, for consistency."""
-    dfs_data = __get_dfs_data(graph)
+    dfs_data = __get_dfs_data(graph, adj)
 
     dfs_data['graph'] = graph
     dfs_data['adj'] = adj
@@ -113,7 +113,7 @@ def __branch_point_dfs(dfs_data):
     stem = {}
     stem[u] = u
     b = {}
-    b[u] = 0
+    b[u] = 1
     __branch_point_dfs_recursive(u, large_n, b, stem, dfs_data)
     dfs_data['N_u_lookup'] = large_n
     dfs_data['b_u_lookup'] = b
@@ -122,28 +122,30 @@ def __branch_point_dfs(dfs_data):
 
 def __branch_point_dfs_recursive(u, large_n, b, stem, dfs_data):
     """A recursive implementation of the BranchPtDFS function, as defined on page 14 of the paper."""
-    t = dfs_data['adj'][u][0]
-    large_w = wt(u, t, dfs_data)
+    first_vertex = dfs_data['adj'][u][0]
+    large_w = wt(u, first_vertex, dfs_data)
     if large_w % 2 == 0:
         large_w += 1
     v_I = 0
     v_II = 0
     for v in [v for v in dfs_data['adj'][u] if wt(u, v, dfs_data) <= large_w]:
-        if a(v, dfs_data) == u:
+        stem[u] = v # not in the original paper, but a logical extension based on page 13
+        if a(v, dfs_data) == u: # uv is a tree edge
             large_n[v] = 0
             if wt(u, v, dfs_data) % 2 == 0:
                 v_I = v
             else:
                 b_u = b[u]
                 l2_v = L2(v, dfs_data)
-                if l2_v > b_u:
+                #if l2_v > b_u:
                     # If this is true, then we're not on a branch at all
-                    continue
+                #    continue
                 if l2_v < b_u:
                     large_n[v] = 1
                 elif b_u != 1:
                     print stem
                     print dfs_data['lowpoint_2_lookup']
+                    print b
                     xnode = stem[l2_v]
                     if large_n[xnode] != 0:
                         large_n[v] = large_n[xnode] + 1
