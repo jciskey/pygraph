@@ -143,3 +143,62 @@ def build_k33_graph():
 
     return graph
 
+def build_groetzch_graph():
+    """Makes a new Groetzsch graph.
+       Ref: http://mathworld.wolfram.com/GroetzschGraph.html"""
+    # Because the graph is so complicated, we want to
+    # build it via adjacency matrix specification
+    
+    # -- Initialize the matrix to all zeros
+    adj = [[0 for _ in xrange(11)] for _ in xrange(11)]
+
+    # -- Add individual edge connections
+    row_connections = []
+
+    row_connections.append( (1,2,7,10) )
+    row_connections.append( (0,3,6,9) )
+    row_connections.append( (0,4,6,8) )
+    row_connections.append( (1,4,8,10) )
+    row_connections.append( (2,3,7,9) )
+    row_connections.append( (6,7,8,9,10) )
+    row_connections.append( (1,2,5) )
+    row_connections.append( (0,4,5) )
+    row_connections.append( (2,3,5) )
+    row_connections.append( (1,4,5) )
+    row_connections.append( (0,3,5) )
+
+    for j, tpl in enumerate(row_connections):
+        for i in tpl:
+            adj[j][i] = 1
+            adj[i][j] = 1
+    
+    # Debug print the adjacency matrix
+    #for row in adj:
+    #    print row
+
+    graph, _ = create_graph_from_adjacency_matrix(adj)
+
+    return graph
+
+
+def build_franklin_graph():
+    """Makes a new Franklin graph.
+       Ref: http://mathworld.wolfram.com/FranklinGraph.html"""
+    # The easiest way to build the Franklin graph is to start
+    # with C12 and add the additional 6 edges
+    graph = build_cycle_graph(12)
+
+    edge_tpls = [
+        (1,8),
+        (2,7),
+        (3,10),
+        (4,9),
+        (5,12),
+        (6,11)
+    ]
+
+    for i, j in edge_tpls:
+        graph.new_edge(i, j)
+
+    return graph
+

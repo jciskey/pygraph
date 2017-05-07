@@ -2,7 +2,7 @@
 
 import unittest
 
-from ..graph import UndirectedGraph, is_planar, build_k5_graph, build_k33_graph
+from ..graph import UndirectedGraph, is_planar, build_k5_graph, build_k33_graph, build_groetzch_graph, build_franklin_graph
 from . import utility_functions
 
 
@@ -138,6 +138,24 @@ class IsPlanarTest(unittest.TestCase):
     def test_petersons_graph_not_planar(self):
         """Does the ''is_planar'' function correctly classify Peterson's graph as non-planar?"""
         graph = utility_functions.build_petersons_graph()
+
+        expected = False
+        planarity = is_planar(graph)
+
+        self.assertEqual(expected, planarity)
+
+    def test_groetzch_graph_not_planar(self):
+        """Does the ''is_planar'' function correctly classify the Groetzch graph as non-planar?"""
+        graph = build_groetzch_graph()
+
+        expected = False
+        planarity = is_planar(graph)
+
+        self.assertEqual(expected, planarity)
+
+    def test_franklin_graph_not_planar(self):
+        """Does the ''is_planar'' function correctly classify the Franklin graph as non-planar?"""
+        graph = build_franklin_graph()
 
         expected = False
         planarity = is_planar(graph)

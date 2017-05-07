@@ -145,7 +145,7 @@ def create_graph_from_adjacency_matrix(adjacency_matrix):
 
     num_columns = len(adjacency_matrix)
     for _ in xrange(num_columns):
-        node_id = graph.add_node()
+        node_id = graph.new_node()
         node_column_mapping.append(node_id)
 
     for j in xrange(num_columns):
