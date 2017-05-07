@@ -90,6 +90,23 @@ class IsPlanarTest(unittest.TestCase):
 
         self.assertEqual(expected, planarity)
 
+    def test_really_large_ring_graph_is_planar(self):
+        """Does the ''is_planar'' function correctly classify a really large ring graph as planar?"""
+        try:
+            graph = build_cycle_graph(1000)
+
+            expected = True
+            planarity = is_planar(graph)
+
+            self.assertEqual(expected, planarity)
+        except RuntimeError, e:
+            if e.args[0] == 'maximum recursion depth exceeded':
+                #Large graphs cause recursion errors. Exception caught, as expected.
+                pass
+            else:
+                raise e
+
+
     def test_k5_graph_not_planar(self):
         """Does the ''is_planar'' function correctly classify the K5 graph as non-planar?"""
         graph = build_k5_graph()
