@@ -52,3 +52,11 @@ All algorithm implementations should have test cases written and passing.
 
 ## Contributions
 Contributions are more than welcome! Algorithm suggestions, implementations, or even additional tests for existing algorithms are all great ways to contribute. Not a coder? That's fine too! This project is in dire need of documentation and examples.
+
+### Planarity Test Cases
+The planarity testing algorithm is extremely complicated. As such, more tests with more graphs are desired. Good sources of known graphs are:
+
+* [WolframAlpha Planar Graphs](http://mathworld.wolfram.com/PlanarGraph.html)
+* [WolframAlpha Non-Planar Graphs](http://mathworld.wolfram.com/NonplanarGraph.html)
+
+For non-planar graphs, priority should be given to ones that don't fall afoul of Euler's Formula, so that the actual planarity testing algorithm is tested.
