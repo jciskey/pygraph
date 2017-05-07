@@ -202,3 +202,22 @@ def build_franklin_graph():
 
     return graph
 
+
+def build_chvatal_graph():
+    """Makes a new Chvatal graph.
+       Ref: http://mathworld.wolfram.com/ChvatalGraph.html"""
+    # The easiest way to build the Chvatal graph is to start
+    # with C12 and add the additional 12 edges
+    graph = build_cycle_graph(12)
+
+    edge_tpls = [
+        (1,7), (1,9), (2,5), (2,11),
+        (3,7), (3,9), (4,10), (4,12),
+        (5,8), (6,10), (6,12), (8,11),
+    ]
+
+    for i, j in edge_tpls:
+        graph.new_edge(i, j)
+
+    return graph
+

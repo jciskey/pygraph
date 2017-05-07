@@ -2,7 +2,7 @@
 
 import unittest
 
-from ..graph import UndirectedGraph, is_planar, build_k5_graph, build_k33_graph, build_groetzch_graph, build_franklin_graph
+from ..graph import UndirectedGraph, is_planar, build_k5_graph, build_k33_graph, build_groetzch_graph, build_franklin_graph, build_chvatal_graph
 from . import utility_functions
 
 
@@ -161,3 +161,13 @@ class IsPlanarTest(unittest.TestCase):
         planarity = is_planar(graph)
 
         self.assertEqual(expected, planarity)
+
+    def test_chvatal_graph_not_planar(self):
+        """Does the ''is_planar'' function correctly classify the Chvatal graph as non-planar?"""
+        graph = build_chvatal_graph()
+
+        expected = False
+        planarity = is_planar(graph)
+
+        self.assertEqual(expected, planarity)
+

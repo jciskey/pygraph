@@ -20,7 +20,7 @@ from .helpers import DisjointSet
 from .predefined_graphs import (build_triangle_graph, build_square_graph, build_diamond_graph,
                                 build_tetrahedral_graph, build_5_cycle_graph, build_gem_graph,
                                 build_k33_graph, build_k5_graph,
-                                build_groetzch_graph, build_franklin_graph)
+                                build_groetzch_graph, build_franklin_graph, build_chvatal_graph)
 
 # Rendering functions
 from .render import graph_to_dot
