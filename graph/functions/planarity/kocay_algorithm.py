@@ -339,11 +339,23 @@ def __embed_frond(node_u, node_w, dfs_data, as_branch_marker=False):
     elif d_w < l_w and d_w < r_w:
         # Case 7
         print "w-case 7 reached"
+        print "FG: {}".format(dfs_data['FG'])
+        print "LF: {}".format(dfs_data['LF'])
+        print "RF: {}".format(dfs_data['RF'])
+        print "(d_w, l_w, r_w): ({}, {}, {})".format(d_w, l_w, r_w)
+        print "(d_u, u_m, x_m, m): ({}, {}, {}, {})".format(d_u, u_m, x_m, m)
         while d_w < l_w and d_w < r_w:
             if d_u > u_m and d_u > x_m:
                 print "Nonplanar case reached: u-case 1, w-case 7"
+                print "FG: {}".format(dfs_data['FG'])
+                print "LF: {}".format(dfs_data['LF'])
+                print "RF: {}".format(dfs_data['RF'])
+                print "(d_w, l_w, r_w): ({}, {}, {})".format(d_w, l_w, r_w)
+                print "(d_u, u_m, x_m, m): ({}, {}, {}, {})".format(d_u, u_m, x_m, m)
                 return False
             switch_sides(d_u, dfs_data)
+
+            # --Update the local variables fo the next loop iteration
             l_w = lw(dfs_data)
             r_w = rw(dfs_data)
             m = dfs_data['FG']['m']
