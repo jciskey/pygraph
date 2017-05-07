@@ -248,7 +248,8 @@ def build_non_planar_disconnected_test_graph_with_k5_subgraph():
 
 
 def build_petersons_graph():
-    """Builds a non-planar test graph that does not contain K5 or K3,3 as a subgraph (Peterson's Graph)."""
+    """Builds a non-planar test graph that does not contain K5 or K3,3 as a subgraph (Peterson's Graph).
+       Ref: http://mathworld.wolfram.com/PetersenGraph.html"""
     graph = build_5_cycle_graph()
 
     # --Build a 5-pointed star

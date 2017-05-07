@@ -4,7 +4,8 @@ from .classes import UndirectedGraph
 
 
 def build_triangle_graph():
-    """Builds a triangle graph."""
+    """Builds a triangle graph, C3.
+       Ref: http://mathworld.wolfram.com/CycleGraph.html"""
     graph = UndirectedGraph()
 
     graph.new_node()
@@ -18,7 +19,8 @@ def build_triangle_graph():
 
 
 def build_square_graph():
-    """Builds a square graph."""
+    """Builds a square graph, C4.
+       Ref: http://mathworld.wolfram.com/CycleGraph.html"""
     graph = UndirectedGraph()
 
     graph.new_node()
@@ -34,7 +36,8 @@ def build_square_graph():
 
 
 def build_diamond_graph():
-    """Builds a diamond graph."""
+    """Builds a diamond graph.
+       Ref: http://mathworld.wolfram.com/DiamondGraph.html"""
     graph = build_square_graph()
 
     graph.new_edge(2, 4)
@@ -43,7 +46,8 @@ def build_diamond_graph():
 
 
 def build_tetrahedral_graph():
-    """Builds a tetrahedral graph."""
+    """Builds a tetrahedral graph.
+       Ref: http://mathworld.wolfram.com/TetrahedralGraph.html"""
     graph = build_triangle_graph()
 
     graph.new_node()
@@ -55,7 +59,8 @@ def build_tetrahedral_graph():
 
 
 def build_5_cycle_graph():
-    """Builds a 5-cycle graph."""
+    """Builds a 5-cycle graph, C5.
+       Ref: http://mathworld.wolfram.com/CycleGraph.html"""
     graph = UndirectedGraph()
 
     for _ in xrange(5):
@@ -71,7 +76,8 @@ def build_5_cycle_graph():
 
 
 def build_gem_graph():
-    """Builds a gem graph."""
+    """Builds a gem graph, F4,1.
+       Ref: http://mathworld.wolfram.com/GemGraph.html"""
     graph = build_5_cycle_graph()
 
     graph.new_edge(1, 3)
@@ -81,7 +87,8 @@ def build_gem_graph():
 
 
 def build_k5_graph():
-    """Makes a new K5 graph."""
+    """Makes a new K5 graph.
+       Ref: http://mathworld.wolfram.com/Pentatope.html"""
     graph = UndirectedGraph()
 
     # K5 has 5 nodes
@@ -114,7 +121,8 @@ def build_k5_graph():
 
 
 def build_k33_graph():
-    """Makes a new K3,3 graph."""
+    """Makes a new K3,3 graph.
+       Ref: http://mathworld.wolfram.com/UtilityGraph.html"""
     graph = UndirectedGraph()
 
     # K3,3 has 6 nodes
