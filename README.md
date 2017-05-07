@@ -37,7 +37,7 @@ Triconnected Components | :x: Unsupported
 Articulation Vertices | :white_check_mark: Supported
 Separation Pairs | :x: Unsupported
 L-T Separator Theorem | :x: Unsupported
-Planarity Testing | :x: Unsupported
+Planarity Testing | :white_check_mark: Supported
 Planar Embedding | :x: Unsupported
 Fully-Dynamic Planarity Testing | :x: Unsupported
 

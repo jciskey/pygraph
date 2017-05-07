@@ -63,8 +63,8 @@ class IsPlanarTest(unittest.TestCase):
 
         self.assertEqual(expected, planarity)
 
-    def test_tiny_ring_graph_is_planar(self):
-        """Does the ''is_planar'' function correctly classify a tiny ring graph as planar?"""
+    def test_tiny_cycle_graph_is_planar(self):
+        """Does the ''is_planar'' function correctly classify a tiny cycle graph as planar?"""
         graph = build_cycle_graph(4)
 
         expected = True
@@ -72,8 +72,8 @@ class IsPlanarTest(unittest.TestCase):
 
         self.assertEqual(expected, planarity)
 
-    def test_small_ring_graph_is_planar(self):
-        """Does the ''is_planar'' function correctly classify a small ring graph as planar?"""
+    def test_small_cycle_graph_is_planar(self):
+        """Does the ''is_planar'' function correctly classify a small cycle graph as planar?"""
         graph = build_cycle_graph(10)
 
         expected = True
@@ -81,8 +81,8 @@ class IsPlanarTest(unittest.TestCase):
 
         self.assertEqual(expected, planarity)
 
-    def test_large_ring_graph_is_planar(self):
-        """Does the ''is_planar'' function correctly classify a large ring graph as planar?"""
+    def test_large_cycle_graph_is_planar(self):
+        """Does the ''is_planar'' function correctly classify a large cycle graph as planar?"""
         graph = build_cycle_graph(100)
 
         expected = True
@@ -90,8 +90,8 @@ class IsPlanarTest(unittest.TestCase):
 
         self.assertEqual(expected, planarity)
 
-    def test_really_large_ring_graph_is_planar(self):
-        """Does the ''is_planar'' function correctly classify a really large ring graph as planar?"""
+    def test_really_large_cycle_graph_is_planar(self):
+        """Does the ''is_planar'' function correctly classify a really large cycle graph as planar?"""
         try:
             graph = build_cycle_graph(1000)
 
