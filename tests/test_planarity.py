@@ -2,7 +2,7 @@
 
 import unittest
 
-from ..graph import UndirectedGraph, is_planar, build_k5_graph, build_k33_graph, build_groetzch_graph, build_franklin_graph, build_chvatal_graph
+from ..graph import UndirectedGraph, is_planar, build_cycle_graph, build_k5_graph, build_k33_graph, build_groetzch_graph, build_franklin_graph, build_chvatal_graph
 from . import utility_functions
 
 
@@ -65,7 +65,7 @@ class IsPlanarTest(unittest.TestCase):
 
     def test_tiny_ring_graph_is_planar(self):
         """Does the ''is_planar'' function correctly classify a tiny ring graph as planar?"""
-        graph = utility_functions.build_ring_graph(4)
+        graph = build_cycle_graph(4)
 
         expected = True
         planarity = is_planar(graph)
@@ -74,7 +74,7 @@ class IsPlanarTest(unittest.TestCase):
 
     def test_small_ring_graph_is_planar(self):
         """Does the ''is_planar'' function correctly classify a small ring graph as planar?"""
-        graph = utility_functions.build_ring_graph(10)
+        graph = build_cycle_graph(10)
 
         expected = True
         planarity = is_planar(graph)
@@ -83,7 +83,7 @@ class IsPlanarTest(unittest.TestCase):
 
     def test_large_ring_graph_is_planar(self):
         """Does the ''is_planar'' function correctly classify a large ring graph as planar?"""
-        graph = utility_functions.build_ring_graph(100)
+        graph = build_cycle_graph(100)
 
         expected = True
         planarity = is_planar(graph)

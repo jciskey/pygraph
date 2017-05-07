@@ -269,18 +269,3 @@ def build_petersons_graph():
     graph.new_edge(5, 10)
 
     return graph
-
-def build_ring_graph(num_nodes):
-    """Builds a ring graph with a specified number of nodes."""
-    graph = UndirectedGraph()
-
-    first_node = graph.new_node()
-    if num_nodes > 1:
-        previous_node = first_node
-        for _ in xrange(num_nodes - 1):
-            new_node = graph.new_node()
-            graph.new_edge(previous_node, new_node)
-            previous_node = new_node
-        graph.new_edge(previous_node, first_node)
-
-    return graph
