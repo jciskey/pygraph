@@ -412,8 +412,13 @@ def __do_case_5_work(d_w, d_u, case_1, case_2, case_3, dfs_data):
     # --Add the frond to the left side
     __insert_frond_LF(d_w, d_u, dfs_data)
 
+    # --Add uw to Lm
     m = dfs_data['FG']['m']
     Lm = L(m, dfs_data)
+    if comp_d_w < Lm['u']:
+        Lm['u'] = d_w
+    if d_u > Lm['v']:
+        Lm['v'] = d_u
 
     # --Case 2 requires a bit of extra work
     if case_2:
@@ -453,8 +458,13 @@ def __do_case_6_work(d_w, d_u, case_1, case_2, case_3, dfs_data):
     # --Add the frond to the right side
     __insert_frond_RF(d_w, d_u, dfs_data)
 
+    # --Add uw to Rm
     m = dfs_data['FG']['m']
     Rm = R(m, dfs_data)
+    if comp_d_w < Rm['x']:
+        Rm['x'] = d_w
+    if d_u > Rm['y']:
+        Rm['y'] = d_u
 
     # --Case 3 requires a bit of extra work
     if case_3:
@@ -471,39 +481,17 @@ def __do_case_6_work(d_w, d_u, case_1, case_2, case_3, dfs_data):
 
 def __insert_frond_RF(d_w, d_u, dfs_data):
     """Encapsulates the process of inserting a frond uw into the right side frond group."""
-    # d_w can come in as a negative value, if it was a false frond marker
-    # However, we want the non-negative value for comparison purposes
-    comp_d_w = abs(d_w)
-
     # --Add the frond to the right side
     dfs_data['RF'].append( (d_w, d_u) )
     dfs_data['FG']['r'] += 1
-    m = dfs_data['FG']['m']
-    # --Add uw to Rm
-    Rm = R(m, dfs_data)
-    if comp_d_w < Rm['x']:
-        Rm['x'] = d_w
-    if d_u > Rm['y']:
-        Rm['y'] = d_u
 
     dfs_data['last_inserted_side'] = 'RF'
 
 def __insert_frond_LF(d_w, d_u, dfs_data):
     """Encapsulates the process of inserting a frond uw into the left side frond group."""
-    # d_w can come in as a negative value, if it was a false frond marker
-    # However, we want the non-negative value for comparison purposes
-    comp_d_w = abs(d_w)
-
-    # --Add the frond to the right side
+    # --Add the frond to the left side
     dfs_data['LF'].append( (d_w, d_u) )
     dfs_data['FG']['l'] += 1
-    m = dfs_data['FG']['m']
-    # --Add uw to Lm
-    Lm = L(m, dfs_data)
-    if comp_d_w < Lm['u']:
-        Lm['u'] = d_w
-    if d_u > Lm['v']:
-        Lm['v'] = d_u
 
     dfs_data['last_inserted_side'] = 'LF'
 
