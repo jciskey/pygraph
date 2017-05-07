@@ -20,6 +20,22 @@ def build_cycle_graph(num_nodes):
 
     return graph
 
+
+def build_wheel_graph(num_nodes):
+    """Builds a wheel graph with the specified number of nodes.
+       Ref: http://mathworld.wolfram.com/WheelGraph.html"""
+    # The easiest way to build a wheel graph is to build
+    # C_n-1 and then add a hub node and spoke edges
+    graph = build_cycle_graph(num_nodes - 1)
+
+    cycle_graph_vertices = graph.get_all_node_ids()
+
+    node_id = graph.new_node()
+    for cycle_node in cycle_graph_vertices:
+        graph.new_edge(node_id, cycle_node)
+
+    return graph
+
 def build_triangle_graph():
     """Builds a triangle graph, C3.
        Ref: http://mathworld.wolfram.com/CycleGraph.html"""
@@ -47,14 +63,9 @@ def build_diamond_graph():
 
 
 def build_tetrahedral_graph():
-    """Builds a tetrahedral graph.
+    """Builds a tetrahedral graph, K4 (also, W4).
        Ref: http://mathworld.wolfram.com/TetrahedralGraph.html"""
-    graph = build_triangle_graph()
-
-    graph.new_node()
-    graph.new_edge(1, 4)
-    graph.new_edge(2, 4)
-    graph.new_edge(3, 4)
+    graph = build_wheel_graph(4)
 
     return graph
 
