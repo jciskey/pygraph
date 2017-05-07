@@ -127,3 +127,64 @@ def merge_graphs(main_graph, addition_graph):
         edge_mapping[edge_id] = new_edge_id
 
     return node_mapping, edge_mapping
+
+
+def create_graph_from_adjacency_matrix(adjacency_matrix):
+    """Generates a graph from an adjacency matrix specification.
+       Returns a tuple containing the graph and a list-mapping of node ids to matrix column indices.
+
+       The graph will be an UndirectedGraph if the provided adjacency matrix is symmetric.
+       The graph will be a DirectedGraph if the provided adjacency matrix is not symmetric.
+       Ref: http://mathworld.wolfram.com/AdjacencyMatrix.html"""
+    if is_adjacency_matrix_symmetric(adjacency_matrix):
+        graph = UndirectedGraph()
+    else:
+        graph = DirectedGraph()
+
+    node_column_mapping = []
+
+    num_columns = len(adjacency_matrix)
+    for _ in xrange(num_columns):
+        node_id = graph.add_node()
+        node_column_mapping.append(node_id)
+
+    for j in xrange(num_columns):
+        for i in xrange(num_columns):
+            if adjacency_matrix[j][i]:
+                jnode_id = node_column_mapping[j]
+                inode_id = node_column_mapping[i]
+                # Because of our adjacency matrix encoding, [j][i] in our code corresponds to [i][j] in a traditional matrix interpretation
+                # Thus, we need to put an edge from node i to node j if [j][i] in our code is non-zero
+                graph.new_edge(inode_id, jnode_id)
+
+    return (graph, node_column_mapping)
+
+
+def is_adjacency_matrix_symmetric(adjacency_matrix):
+    """Determines if an adjacency matrix is symmetric.
+       Ref: http://mathworld.wolfram.com/SymmetricMatrix.html"""
+    # Verify that the matrix is square
+    num_columns = len(adjacency_matrix)
+    for column in adjacency_matrix:
+        # In a square matrix, every row should be the same length as the number of columns
+        if len(column) != num_columns:
+            return False
+
+    # Loop through the bottom half of the matrix and compare it to the top half
+    # --We do the bottom half because of how we construct adjacency matrices
+    max_i = 0
+    for j in xrange(num_columns):
+        for i in xrange(max_i):
+            # If i == j, we can skip ahead so we don't compare with ourself
+            if i == j:
+                continue
+            # Compare the value in the bottom half with the mirrored value in the top half
+            # If they aren't the same, the matrix isn't symmetric
+            if adjacency_matrix[j][i] != adjacency_matrix[i][j]:
+                return False
+        max_i += 1
+
+    # If we reach this far without returning false, then we know that everything matched,
+    # which makes this a symmetric matrix
+    return True
+
