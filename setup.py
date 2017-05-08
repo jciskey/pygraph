@@ -3,8 +3,9 @@ from setuptools import setup
 
 setup(
     name='PyGraph',
-    version='0.1.0',
+    version='0.2.0',
     description="A graph manipulation library in pure Python",
+    url="https://github.com/jciskey/pygraph",
     license="MIT",
     packages=["pygraph", "pygraph.classes", "pygraph.functions", "pygraph.helpers"],
     classifiers=[
