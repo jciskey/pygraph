@@ -2,7 +2,7 @@
 
 import unittest
 
-from ..graph import UndirectedGraph, get_connected_components, get_connected_components_as_subgraphs, make_subgraph
+from ..pygraph import UndirectedGraph, get_connected_components, get_connected_components_as_subgraphs, make_subgraph
 from . import utility_functions
 
 

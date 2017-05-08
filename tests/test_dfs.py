@@ -3,7 +3,7 @@
 import unittest
 from collections import defaultdict
 
-from ..graph import UndirectedGraph, depth_first_search, get_connected_components
+from ..pygraph import UndirectedGraph, depth_first_search, get_connected_components
 from . import utility_functions
 
 

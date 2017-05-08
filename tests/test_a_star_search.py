@@ -2,9 +2,9 @@
 
 import unittest
 
-from ..graph import UndirectedGraph, a_star_search
+from ..pygraph import UndirectedGraph, a_star_search
 from . import utility_functions
-from ..graph.exceptions import NonexistentNodeError
+from ..pygraph.exceptions import NonexistentNodeError
 
 
 class AStarSearchTest(unittest.TestCase):

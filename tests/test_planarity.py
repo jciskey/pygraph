@@ -2,7 +2,7 @@
 
 import unittest
 
-from ..graph import UndirectedGraph, is_planar, build_cycle_graph, build_k5_graph, build_k33_graph, build_groetzch_graph, build_franklin_graph, build_chvatal_graph
+from ..pygraph import UndirectedGraph, is_planar, build_cycle_graph, build_k5_graph, build_k33_graph, build_groetzch_graph, build_franklin_graph, build_chvatal_graph
 from . import utility_functions
 
 

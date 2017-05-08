@@ -2,7 +2,7 @@
 
 import unittest
 
-from ..graph import (UndirectedGraph, find_biconnected_components, find_articulation_vertices, merge_graphs,
+from ..pygraph import (UndirectedGraph, find_biconnected_components, find_articulation_vertices, merge_graphs,
                      build_triangle_graph, build_square_graph, build_diamond_graph,
                      build_tetrahedral_graph, build_5_cycle_graph, build_gem_graph)
 

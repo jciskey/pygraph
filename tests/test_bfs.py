@@ -3,7 +3,7 @@
 import unittest
 from collections import defaultdict
 
-from ..graph import UndirectedGraph, breadth_first_search
+from ..pygraph import UndirectedGraph, breadth_first_search
 from . import utility_functions
 
 

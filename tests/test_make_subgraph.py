@@ -2,7 +2,7 @@
 
 import unittest
 
-from ..graph import UndirectedGraph, make_subgraph
+from ..pygraph import UndirectedGraph, make_subgraph
 from . import utility_functions
 
 

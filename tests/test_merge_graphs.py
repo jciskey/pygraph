@@ -3,7 +3,7 @@
 import unittest
 import copy
 
-from ..graph import UndirectedGraph, merge_graphs, build_triangle_graph
+from ..pygraph import UndirectedGraph, merge_graphs, build_triangle_graph
 from . import utility_functions
 
 

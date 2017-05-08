@@ -2,7 +2,7 @@
 
 import unittest
 
-from ..graph import UndirectedGraph, find_minimum_spanning_tree, find_minimum_spanning_forest, DisconnectedGraphError
+from ..pygraph import UndirectedGraph, find_minimum_spanning_tree, find_minimum_spanning_forest, DisconnectedGraphError
 from . import utility_functions
 
 

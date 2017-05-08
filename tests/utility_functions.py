@@ -1,6 +1,6 @@
 """Provides utility functions for unit testing."""
 
-from ..graph import (DirectedGraph, UndirectedGraph,
+from ..pygraph import (DirectedGraph, UndirectedGraph,
                      build_triangle_graph, build_k5_graph, build_k33_graph, build_5_cycle_graph,
                      merge_graphs)
 

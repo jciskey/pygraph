@@ -2,7 +2,7 @@
 
 import unittest
 
-from ..graph import DirectedGraph, NonexistentNodeError, NonexistentEdgeError
+from ..pygraph import DirectedGraph, NonexistentNodeError, NonexistentEdgeError
 from . import utility_functions
 
 
