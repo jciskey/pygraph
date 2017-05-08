@@ -1,6 +1,8 @@
 # pygraph
 A graph manipulation library in pure Python
 
+Available on [PyPI](https://pypi.python.org/pypi/pygraph)
+
 Pygraph aims to be an easy-to-use and functional graph library that doesn't sacrifice advanced capabilities or usability in the process.
 
 By implementing the library in pure Python, it can be installed without any dependencies aside from the Python core, enabling maximum ease of use.
@@ -41,6 +43,16 @@ Planarity Testing | :white_check_mark: Supported
 Planar Embedding | :x: Unsupported
 Fully-Dynamic Planarity Testing | :x: Unsupported
 
+
+## Installation && Usage
+Installing the module is as easy as `pip install pygraph`
+
+```python
+>>> import pygraph
+>>> g = pygraph.build_chvatal_graph()
+>>> pygraph.is_planar(g)
+False
+```
 
 ## Running the Test Suite
 The entire test suite is written using the standard library unittest module, so you should be able to run it with whichever framework you most prefer. We recommend [nose](http://nose.readthedocs.io/).
