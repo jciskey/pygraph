@@ -1,5 +1,6 @@
-from setuptools import setup
+from setuptools import find_packages, setup
 
+EXCLUDE_FROM_PACKAGES = []
 
 setup(
     name='PyGraph',
@@ -7,7 +8,7 @@ setup(
     description="A graph manipulation library in pure Python",
     url="https://github.com/jciskey/pygraph",
     license="MIT",
-    packages=["pygraph", "pygraph.classes", "pygraph.functions", "pygraph.helpers"],
+    packages=find_packages(exclude=EXCLUDE_FROM_PACKAGES),
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
