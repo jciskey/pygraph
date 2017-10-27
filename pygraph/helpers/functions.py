@@ -14,12 +14,12 @@ def make_subgraph(graph, vertices, edges):
     local_graph = copy.deepcopy(graph)
 
     # Remove all the edges that aren't in the list
-    edges_to_delete = filter(lambda x: x not in edges, local_graph.get_all_edge_ids())
+    edges_to_delete = [x for x in local_graph.get_all_edge_ids() if x not in edges]
     for e in edges_to_delete:
         local_graph.delete_edge_by_id(e)
 
     # Remove all the vertices that aren't in the list
-    nodes_to_delete = filter(lambda x: x not in vertices, local_graph.get_all_node_ids())
+    nodes_to_delete = [x for x in local_graph.get_all_node_ids() if x not in vertices]
     for n in nodes_to_delete:
         local_graph.delete_node(n)
 
@@ -144,12 +144,12 @@ def create_graph_from_adjacency_matrix(adjacency_matrix):
     node_column_mapping = []
 
     num_columns = len(adjacency_matrix)
-    for _ in xrange(num_columns):
+    for _ in range(num_columns):
         node_id = graph.new_node()
         node_column_mapping.append(node_id)
 
-    for j in xrange(num_columns):
-        for i in xrange(num_columns):
+    for j in range(num_columns):
+        for i in range(num_columns):
             if adjacency_matrix[j][i]:
                 jnode_id = node_column_mapping[j]
                 inode_id = node_column_mapping[i]
@@ -173,8 +173,8 @@ def is_adjacency_matrix_symmetric(adjacency_matrix):
     # Loop through the bottom half of the matrix and compare it to the top half
     # --We do the bottom half because of how we construct adjacency matrices
     max_i = 0
-    for j in xrange(num_columns):
-        for i in xrange(max_i):
+    for j in range(num_columns):
+        for i in range(max_i):
             # If i == j, we can skip ahead so we don't compare with ourself
             if i == j:
                 continue

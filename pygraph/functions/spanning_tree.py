@@ -57,7 +57,7 @@ def find_minimum_spanning_forest(graph):
 def find_minimum_spanning_forest_as_subgraphs(graph):
     """Calculates the minimum spanning forest and returns a list of trees as subgraphs."""
     forest = find_minimum_spanning_forest(graph)
-    list_of_subgraphs = map(lambda edge_list: get_subgraph_from_edge_list(graph, edge_list), forest)
+    list_of_subgraphs = [get_subgraph_from_edge_list(graph, edge_list) for edge_list in forest]
 
     return list_of_subgraphs
 

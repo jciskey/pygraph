@@ -282,7 +282,7 @@ def _internal_get_cut_vertex_list(graph):
 
     # The root node gets special treatment; it's a cut vertex iff it has multiple children
     if len(children[root_dfs_count]) > 1:
-        for node_id, dfs in depth.items():
+        for node_id, dfs in list(depth.items()):
             if dfs == root_dfs_count:
                 list_of_cut_vertices.add(node_id)
                 break

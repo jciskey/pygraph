@@ -126,11 +126,11 @@ class DirectedGraph(object):
 
     def get_all_node_ids(self):
         """Returns a list of all the node ids in the graph."""
-        return self.nodes.keys()
+        return list(self.nodes.keys())
 
     def get_all_node_objects(self):
         """Returns a list of all the node objects in the graph."""
-        return self.nodes.values()
+        return list(self.nodes.values())
 
     def get_edge(self, edge_id):
         """Returns the edge object identified by "edge_id"."""
@@ -142,11 +142,11 @@ class DirectedGraph(object):
 
     def get_all_edge_ids(self):
         """Returns a list of all the edge ids in the graph"""
-        return self.edges.keys()
+        return list(self.edges.keys())
 
     def get_all_edge_objects(self):
         """Returns a list of all the edge objects in the graph."""
-        return self.edges.values()
+        return list(self.edges.values())
 
     def delete_edge_by_id(self, edge_id):
         """Removes the edge identified by "edge_id" from the graph."""
@@ -189,7 +189,7 @@ class DirectedGraph(object):
             self.delete_edge_by_id(e)
 
         # Remove all edges to the node
-        edges = [edge_id for edge_id, edge in self.edges.items() if edge['vertices'][1] == node_id]
+        edges = [edge_id for edge_id, edge in list(self.edges.items()) if edge['vertices'][1] == node_id]
         for e in edges:
             self.delete_edge_by_id(e)
 

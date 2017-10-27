@@ -85,7 +85,7 @@ def __sort_adjacency_lists(dfs_data):
     edge_weights = dfs_data['edge_weights']
     edge_lookup = dfs_data['edge_lookup']
 
-    for node_id, adj_list in adjacency_lists.items():
+    for node_id, adj_list in list(adjacency_lists.items()):
         node_weight_lookup = {}
         frond_lookup = {}
         for node_b in adj_list:
@@ -751,8 +751,8 @@ def __get_dfs_data(graph, adj=None):
         * 'children_lookup': A lookup dict mapping nodes to their children
     """
     ordering, parent_lookup, children_lookup = depth_first_search_with_parent_data(graph, adjacency_lists=adj)
-    ordering_lookup = dict(zip(ordering, range(1, len(ordering) + 1)))
-    node_lookup = dict(zip(range(1, len(ordering) + 1), ordering))
+    ordering_lookup = dict(list(zip(ordering, list(range(1, len(ordering) + 1)))))
+    node_lookup = dict(list(zip(list(range(1, len(ordering) + 1)), ordering)))
     edge_lookup = {}
 
     for edge_id in graph.get_all_edge_ids():
@@ -1007,7 +1007,7 @@ def _L(dfs_data):
     """L(T) contains leaves and branch points for the DFS-tree T."""
     """L(T) = {v | the first w in Adj[v] corresponds to a frond vw}."""
     node_set = set()
-    for v, adj in dfs_data['adj'].items():
+    for v, adj in list(dfs_data['adj'].items()):
         w = adj[0]
         if is_frond(v, w, dfs_data):
             node_set.add(v)
@@ -1058,7 +1058,7 @@ def fn_x(i, dfs_data):
     """The minimum vertex (DFS-number) in a frond contained in Ri."""
     try:
         return R(i, dfs_data)['x']
-    except Exception, e:
+    except Exception as e:
         # Page 17 states that if Ri is empty, then we take xi to be n
         return dfs_data['graph'].num_nodes()
 
@@ -1067,7 +1067,7 @@ def y(i, dfs_data):
     """The maximum vertex (DFS-number) in a frond contained in Ri."""
     try:
         return R(i, dfs_data)['y']
-    except Exception, e:
+    except Exception as e:
         # Page 17 states that if Ri is empty, then we take yi to be 0
         return 0
 
