@@ -41,8 +41,8 @@ class DepthFirstSearchTest(unittest.TestCase):
         graph = utility_functions.build_biconnected_test_graph()
 
         ordering = depth_first_search(graph, 1)
-        node_lookup_by_index = dict(zip(range(1, len(ordering) + 1), ordering))
-        items_sorted_by_dfs_index = zip(ordering, range(1, len(ordering) + 1))
+        node_lookup_by_index = dict(list(zip(list(range(1, len(ordering) + 1)), ordering)))
+        items_sorted_by_dfs_index = list(zip(ordering, list(range(1, len(ordering) + 1))))
         # index_lookup_by_node = dict(items_sorted_by_dfs_index)
 
         visited_by_node = defaultdict(lambda: False)
@@ -63,7 +63,7 @@ class DepthFirstSearchTest(unittest.TestCase):
             successor_node_id = node_lookup_by_index[dfs_index+1]
             if in_same_component(node_id, successor_node_id):
                 neighbor_nodes = graph.neighbors(node_id)
-                has_unvisited_neighbors = any(map(lambda n: not visited_by_node[n], neighbor_nodes))
+                has_unvisited_neighbors = any([not visited_by_node[n] for n in neighbor_nodes])
                 if has_unvisited_neighbors:
                     self.assertIn(successor_node_id, neighbor_nodes)
 

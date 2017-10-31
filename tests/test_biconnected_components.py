@@ -102,7 +102,7 @@ class BiconnectedComponentsTest(unittest.TestCase):
         the entire graph for a fully biconnected graph?"""
         graph = utility_functions.build_fully_biconnected_test_graph()
 
-        expected_edges = range(1, 20)  # There are 19 edges in the test graph, so their IDs go from 1-19
+        expected_edges = list(range(1, 20))  # There are 19 edges in the test graph, so their IDs go from 1-19
         calculated_edges = find_biconnected_components(graph)
 
         # Verify that there is only a single component in the calculated edge list

@@ -13,7 +13,7 @@ def build_simple_test_graph(directed=False):
         graph = UndirectedGraph()
 
     # There are 7 vertices in the test graph
-    for _ in xrange(7):
+    for _ in range(7):
         graph.new_node()
 
     # There are 4 edges in the test graph
@@ -96,7 +96,7 @@ def build_biconnected_test_graph(directed=False):
         graph = UndirectedGraph()
 
     # There are 12 vertices in the test graph
-    for _ in xrange(12):
+    for _ in range(12):
         graph.new_node()
 
     # Nodes 1,2,3 form the first component
@@ -196,7 +196,7 @@ def build_complicated_test_graph_with_one_mst(directed=False):
     else:
         graph = UndirectedGraph()
 
-    for _ in xrange(7):
+    for _ in range(7):
         graph.new_node()
 
     graph.new_edge(1, 2, 2)  # 1
@@ -253,7 +253,7 @@ def build_petersons_graph():
     graph = build_5_cycle_graph()
 
     # --Build a 5-pointed star
-    for _ in xrange(5):
+    for _ in range(5):
         graph.new_node()
     graph.new_edge(6, 8)
     graph.new_edge(6, 9)

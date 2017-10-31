@@ -99,7 +99,7 @@ class IsPlanarTest(unittest.TestCase):
             planarity = is_planar(graph)
 
             self.assertEqual(expected, planarity)
-        except RuntimeError, e:
+        except RuntimeError as e:
             if e.args[0] == 'maximum recursion depth exceeded':
                 #Large graphs cause recursion errors. Exception caught, as expected.
                 pass

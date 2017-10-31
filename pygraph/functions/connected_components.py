@@ -52,7 +52,7 @@ def get_connected_components_as_subgraphs(graph):
 
     for c in components:
         edge_ids = set()
-        nodes = map(lambda node: graph.get_node(node), c)
+        nodes = [graph.get_node(node) for node in c]
         for n in nodes:
             # --Loop through the edges in each node, to determine if it should be included
             for e in n['edges']:

@@ -3,14 +3,14 @@
 
 def graph_to_dot(graph, node_renderer=None, edge_renderer=None):
     """Produces a DOT specification string from the provided graph."""
-    node_pairs = graph.nodes.items()
-    edge_pairs = graph.edges.items()
+    node_pairs = list(graph.nodes.items())
+    edge_pairs = list(graph.edges.items())
 
     if node_renderer is None:
         node_renderer_wrapper = lambda nid: ''
     else:
         node_renderer_wrapper = lambda nid: ' [%s]' % ','.join(
-            map(lambda tpl: '%s=%s' % tpl, node_renderer(graph, nid).items()))
+            ['%s=%s' % tpl for tpl in list(node_renderer(graph, nid).items())])
 
     # Start the graph
     graph_string = 'digraph G {\n'
