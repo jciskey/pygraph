@@ -4,7 +4,7 @@ EXCLUDE_FROM_PACKAGES = []
 
 setup(
     name='PyGraph',
-    version='0.2.1',
+    version='0.3.0',
     description="A graph manipulation library in pure Python",
     url="https://github.com/jciskey/pygraph",
     license="MIT",
@@ -18,6 +18,6 @@ setup(
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.6",
     ]
 )
