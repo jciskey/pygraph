@@ -1,7 +1,15 @@
 # pygraph
+
+![PyPI - Version](https://img.shields.io/pypi/v/pygraph)
+![GitHub License](https://img.shields.io/github/license/jciskey/pygraph)
+
 A graph manipulation library in pure Python
 
-Available on [PyPI](https://pypi.python.org/pypi/pygraph)
+## Legacy Mode
+
+Please note that this library is currently in legacy mode and not under active development. PRs are welcome to be submitted, but there's no guarantees about the time it'll take for them to get merged or an updated version released to PyPI. If someone else would like to take over as maintainer of the library, I'm more than willing to discuss that.
+
+## Description
 
 Pygraph aims to be an easy-to-use and functional graph library that doesn't sacrifice advanced capabilities or usability in the process.
 
